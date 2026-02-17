@@ -767,9 +767,1314 @@ foreach (var ageGroup in groupedResult)
 
 
 // 4. Join Operators: Join & GroupJoin
+// The joining operators joins the two sequences (collections) and produce a result.
+/*
+
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Operator          ┃ Usage / Description                                                ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Join              ┃ Joins two sequences based on a key and returns a flat, resulted    ┃
+┃                   ┃ sequence. Similar to an Inner Join in SQL.                         ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ GroupJoin         ┃ Joins two sequences based on keys and returns groups of            ┃
+┃                   ┃ sequences. Similar to a Left Outer Join in SQL.                    ┃
+┗━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 4.1 Join
+The Join operator operates on two collections, inner collection & outer collection.
+It returns a new collection that contains elements from both the collections which satisfies specified expression. It is the same as inner join of SQL.
+> Join in Method Syntax
+The Join extension method has two overloads as shown below.
+> Join Overload Methods:
+1. public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer,IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector,Func<TInner, TKey> innerKeySelector,Func<TOuter, TInner, TResult> resultSelector);
+2. public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer,IEnumerable<TInner> inner,Func<TOuter, TKey> outerKeySelector,Func<TInner, TKey> innerKeySelector,Func<TOuter, TInner, TResult> resultSelector,IEqualityComparer<TKey> comparer);
+> As you can see in the first overload method takes five input parameters (except the first 'this' parameter): 
+1) outer
+2) inner
+3) outerKeySelector
+4) innerKeySelector
+5) resultSelector.
+*/
+//> Example: Join operator C#
+IList<string> strList1 = new List<string>() { 
+    "One", 
+    "Two", 
+    "Three", 
+    "Four"
+};
+
+IList<string> strList2 = new List<string>() { 
+    "One", 
+    "Two", 
+    "Five", 
+    "Six"
+};
+
+var innerJoin = strList1.Join( // outer sequence
+                        strList2,  // inner sequence
+                        str1 => str1, // outer key selector
+                        str2 => str2, // inner key selector
+                        (str1, str2) => str1 // result selector
+                        );
+
+//> there is also query syntax for join operator.
+
+//> 4.2 GroupJoin
+/*
+We have seen the Join operator in the previous section. The GroupJoin operator performs the same task as Join operator except that GroupJoin returns a result in group based on 
+specified group key.
+The GroupJoin operator joins two sequences based on key and groups the result by matching key and then returns the collection of grouped result and key.
+GroupJoin requires same parameters as Join. GroupJoin has following two overload methods:
+> GroupJoin Overload Methods:
+1. public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector);
+2. public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer);
+As you can see in the first overload method takes five input parameters (except the first 'this' parameter):
+1) outer
+2) inner
+3) outerKeySelector 
+4) innerKeySelector
+5) resultSelector.
+! Please notice that resultSelector is of Func delegate type that has second input parameter as IEnumerable type for inner sequence.
+*/
+
+public class Program
+{
+	public static void Main()
+	{
+		// Student collection
+		IList<Student> studentList = new List<Student>() { 
+				new Student() { StudentID = 1, StudentName = "John", Age = 18, StandardID = 1 } ,
+				new Student() { StudentID = 2, StudentName = "Steve",  Age = 21, StandardID = 1 } ,
+				new Student() { StudentID = 3, StudentName = "Bill",  Age = 18, StandardID = 2 } ,
+				new Student() { StudentID = 4, StudentName = "Ram" , Age = 20, StandardID = 2 } ,
+				new Student() { StudentID = 5, StudentName = "Ron" , Age = 21 } 
+			};
+		
+		IList<Standard> standardList = new List<Standard>() { 
+				new Standard(){ StandardID = 1, StandardName="Standard 1"},
+				new Standard(){ StandardID = 2, StandardName="Standard 2"},
+				new Standard(){ StandardID = 3, StandardName="Standard 3"}
+			};
+		
+		var groupJoin = standardList.GroupJoin(studentList,  //inner sequence
+                                std => std.StandardID, //outerKeySelector 
+                                s => s.StandardID,     //innerKeySelector
+                                (std, studentsGroup) => new // resultSelector 
+                                {
+                                    Students = studentsGroup,
+                                    StandarFulldName = std.StandardName
+                                });
+
+		foreach (var item in groupJoin)
+		{ 
+			Console.WriteLine(item.StandarFulldName );
+			
+			foreach(var stud in item.Students)
+				Console.WriteLine(stud.StudentName);
+		}
+		
+	}
+		
+}
+
+public class Student{
+
+	public int StudentID { get; set; }
+	public string StudentName { get; set; }
+	public int Age { get; set; }
+	public int StandardID { get; set; }
+}
+
+public class Standard{
+
+	public int StandardID { get; set; }
+	public string StandardName { get; set; }
+}
+
+//> also there is query syntax for group join operator.
+
+//> 5. Projection Operators: Select, SelectMany
+/*
+There are two projection operators available in LINQ. 
+1. Select 
+2. SelectMany
+
+> 5.1 Select
+The Select operator always returns an IEnumerable collection which contains elements based on a transformation function.
+It is similar to the Select clause of SQL that produces a flat result set.
+*/
+public class Student{ 
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+    public int Age { get; set; }
+}
+
+//> Select in Query Syntax
+//> Example: Select in Query Syntax C#
+IList<Student> studentList = new List<Student>() { 
+    new Student() { StudentID = 1, StudentName = "John" },
+    new Student() { StudentID = 2, StudentName = "Moin" },
+    new Student() { StudentID = 3, StudentName = "Bill" },
+    new Student() { StudentID = 4, StudentName = "Ram" },
+    new Student() { StudentID = 5, StudentName = "Ron" } 
+};
+
+var selectResult = from s in studentList
+                   select s.StudentName;
+
+// The select operator can be used to formulat the result as per our requirement.
+// It can be used to return a collection of custom class or anonymous type which includes properties as per our need.
+//> Example: Select in Query Syntax C#
+IList<Student> studentList = new List<Student>() { 
+    new Student() { StudentID = 1, StudentName = "John", Age = 13 } ,
+    new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+    new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+    new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+    new Student() { StudentID = 5, StudentName = "Ron" , Age = 15 } 
+};
+
+// returns collection of anonymous objects with Name and Age property
+var selectResult = from s in studentList
+                   select new { Name = "Mr. " + s.StudentName, Age = s.Age }; 
+
+// iterate selectResult
+foreach (var item in selectResult)
+    Console.WriteLine("Student Name: {0}, Age: {1}", item.Name, item.Age);
+
+//> Select in Method Syntax
+//> Example: Select in Method Syntax C#
+IList<Student> studentList = new List<Student>() { 
+    new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+    new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+    new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+    new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+    new Student() { StudentID = 5, StudentName = "Ron" , Age = 21 } 
+};
+    
+var selectResult = studentList.Select(s => new { Name = s.StudentName , Age = s.Age  });
+
+//> 5.2 Select Many
+// The SelectMany operator projects sequences of values that are based on a transform function and then flattens them into one sequence.
+
+//> 6. Quantifier Operators
+/*
+The quantifier operators evaluate elements of the sequence on some condition and return a boolean value to indicate that some or all elements satisfy the condition.
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Operator      ┃ Description                                                       ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ All           ┃ Checks if all the elements in a sequence satisfy the specified    ┃
+┃               ┃ condition. Returns true only if every item matches.               ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Any           ┃ Checks if any of the elements in a sequence satisfy the specified ┃
+┃               ┃ condition. Also used to check if a sequence is not empty.         ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Contains      ┃ Checks if the sequence contains a specific element (value).       ┃
+┃               ┃ Useful for finding a specific ID or string in a list.             ┃
+┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 6.1 All
+The All operator evaluates each elements in the given collection on a specified condition and returns True if all the elements satisfy a condition.
+> Example: All operator C#
+
+*/
+IList<Student> studentList = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+// checks whether all the students are teenagers    
+bool areAllStudentsTeenAger = studentList.All(s => s.Age > 12 && s.Age < 20);
+Console.WriteLine(areAllStudentsTeenAger);
+
+//> 6.2 Any
+//> Any checks whether any element satisfy given condition or not? In the following example, Any operation is used to check whether any student is teen ager or not.
+//> Example: Any operator C#
+bool isAnyStudentTeenAger = studentList.Any(s => s.Age > 12 && s.Age < 20);
+//! Quantifier operators are Not Supported with C# query syntax.
+
+/*
+> 6.3 Contains
+> The Contains operator checks whether a specified element exists in the collection or not and returns a boolean.
+The Contains() extension method has following two overloads. The first overload method requires a value to check in the collection and the second overload 
+method requires additional parameter of IEqualityComparer type for custom equalality comparison.
+> Contains() Overloads:
+1. public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource value);
+2. public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource value,IEqualityComparer<TSource> comparer);
+As mentioned above, the Contains() extension method requires a value to check as a input parameter. Type of a value must be same as type of generic collection.
+The following example of Contains checks whether 10 exists in the collection or not. Please notice that int is a type of generic collection.
+*/
+//> Example: Contains operator C#
+IList<int> intList = new List<int>() { 1, 2, 3, 4, 5 };
+bool result = intList.Contains(10);  // returns false
+
+//! The above example works well with primitive data types. However, it will not work with a custom class.
+//!!! Error!! 
+IList<Student> studentList = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+Student std = new Student(){ StudentID =3, StudentName = "Bill"};
+bool result = studentList.Contains(std);  //returns false
+
+//# the problem is that Contains() method will only compare the reference in this case even though the values are the same but the reference is different.
+//> To solve this problem, you can implement IEqualityComparer interface in your custom class and then pass the object of that class as a second parameter to Contains() method for custom equality comparison as shown below.
+
+class StudentComparer : IEqualityComparer<Student>
+{
+    public bool Equals(Student x, Student y)
+        {
+            if (x.StudentID == y.StudentID && 
+                        x.StudentName.ToLower() == y.StudentName.ToLower())
+                return true;
+
+            return false;
+        }
+
+        public int GetHashCode(Student obj)
+        {
+            return obj.GetHashCode();
+        }
+}
+
+//> Now, you can use the above StudentComparer class in second overload method of Contains extension method that accepts second parameter of IEqualityComparer type, as below:
+
+IList<Student> studentList = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+Student std = new Student(){ StudentID =3, StudentName = "Bill"};
+bool result = studentList.Contains(std, new StudentComparer()); //returns true
+
+//>  7. Aggregation Operators
+/*
+> The aggregation operators perform mathematical operations like Average, Aggregate, Count, Max, Min and Sum, on the numeric property of the elements in the collection.
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Method            ┃ Description                                                      ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Aggregate         ┃ Performs a custom aggregation operation on the values in the     ┃
+┃                   ┃ collection (e.g., building a string or custom math).             ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Average           ┃ Calculates the average of the numeric items in the collection.   ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Count             ┃ Counts the elements in a collection (returns an int).            ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ LongCount         ┃ Counts the elements in a collection (returns a long). Useful for ┃
+┃                   ┃ very large datasets.                                             ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Max               ┃ Finds the largest value in the collection.                       ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Min               ┃ Finds the smallest value in the collection.                      ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Sum               ┃ Calculates the total sum of the values in the collection.        ┃
+┗━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 7.1 Aggregate
+The Aggregate method performs an accumulate operation. Aggregate extension method has the following overload methods:
+> Aggregate() Overloads:
+1. public static TSource Aggregate<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, TSource> func);
+2. public static TAccumulate Aggregate<TSource, TAccumulate>(this IEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func);
+3. public static TResult Aggregate<TSource, TAccumulate, TResult>(this IEnumerable<TSource> source, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func, Func<TAccumulate, TResult> resultSelector);
+*/
+//> Example: Aggregate in Method Syntax C#
+
+IList<String> strList = new List<String>() { "One", "Two", "Three", "Four", "Five"};
+
+var commaSeperatedString = strList.Aggregate((s1, s2) => s1 + ", " + s2);
+
+Console.WriteLine(commaSeperatedString);
+
+//> Aggregate Method with Seed Value
+// The second overload method of Aggregate requires first parameter for seed value to accumulate. Second parameter is Func type delegate:
+// TAccumulate Aggregate<TSource, TAccumulate>(TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func);.
+
+//> Example: Aggregate with Seed Value C#
+// Student collection
+IList<Student> studentList = new List<Student>>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 13} ,
+        new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20} ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 15 } 
+    };
+
+string commaSeparatedStudentNames = studentList.Aggregate<Student, string>(
+                                        "Student Names: ",  // seed value
+                                        (str, s) => str += s.StudentName + "," ); 
+
+Console.WriteLine(commaSeparatedStudentNames);
+
+//> Aggregate Method with Result Selector
+// Now, let's see third overload method that required the third parameter of the Func delegate expression for result selector, so that you can formulate the result.
+//> Example: Aggregate with Result Selector C#
+IList<Student> studentList = new List<Student>>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 13} ,
+        new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20} ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 15 } 
+    };
+
+string commaSeparatedStudentNames = studentList.Aggregate<Student, string,string>(
+                                            String.Empty, // seed value
+                                            (str, s) => str += s.StudentName + ",", // returns result using seed value, String.Empty goes to lambda expression as str
+                                            str => str.Substring(0,str.Length - 1 )); // result selector that removes last comma
+
+Console.WriteLine(commaSeparatedStudentNames);
+
+/*
+> 7.2 Average
+Average extension method calculates the average of the numeric items in the collection. Average method returns nullable or non-nullable decimal, double or float value.
+The following example demonstrate Average method that returns average value of all the integers in the collection.
+*/
+//> Example: Average operator C#
+IList<int> intList = new List<int>>() { 10, 20, 30 };
+var avg = intList.Average();
+Console.WriteLine("Average: {0}", avg);
+// You can specify an int, decimal, double or float property of a class as a lambda expression of which you want to get an average value.
+//> The following example demonstrates Average method on the complex type.
+//> Example: Average in Method Syntax C#
+IList<Student> studentList = new List<Student>>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 13} ,
+        new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20} ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 15 } 
+    };
+
+var avgAge = studentList.Average(s => s.Age);
+
+Console.WriteLine("Average Age of Student: {0}", avgAge);
 
 
+/*
+> 7.3 Count
+The Count operator returns the number of elements in the collection or number of elements that have satisfied the given condition.
+
+The Count() extension method has the following two overloads:
+> Count() Overloads:
+1. int Count<TSource>();
+2. int Count<TSource>(Func<TSource, bool> predicate);
+The first overload method of Count returns the number of elements in the specified collection, whereas the second overload method returns the number of
+elements which have satisfied the specified condition given as lambda expression/predicate function.
+*/
+//> The following example demonstrates Count() on primitive collection.
+//> Example: Count() - C#
+IList<int> intList = new List<int>() { 10, 21, 30, 45, 50 };
+
+var totalElements = intList.Count();
+
+Console.WriteLine("Total Elements: {0}", totalElements);
+
+var evenElements = intList.Count(i => i%2 == 0);
+
+Console.WriteLine("Even Elements: {0}", evenElements);
+
+//> The following example demonstrates Count() method on the complex type collection.
+//> Example: Count() in C#
+
+IList<Student> studentList = new List<Student>>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 13} ,
+        new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20} ,
+        new Student() { StudentID = 5, StudentName = "Mathew" , Age = 15 } 
+    };
+
+var totalStudents = studentList.Count();
+
+Console.WriteLine("Total Students: {0}", totalStudents);
+
+var adultStudents = studentList.Count(s => s.Age >= 18);
+
+Console.WriteLine("Number of Adult Students: {0}", adultStudents );
 
 
+//> 7.4 Max
+//> The Max() method returns the largest numeric element from a collection.
+
+//> Example: Max method C#
+IList<int> intList = new List<int>() { 10, 21, 30, 45, 50, 87 };
+
+var largest = intList.Max();
+
+Console.WriteLine("Largest Element: {0}", largest);
+
+var largestEvenElements = intList.Max(i => {
+			                        if(i%2 == 0)
+				                        return i;
+			
+			                        return 0;
+		                        });
+
+Console.WriteLine("Largest Even Element: {0}", largestEvenElements );
+
+//> The following example demonstrates Max() method on the complex type collection.
+//> Example: Max in Method Syntax C#
+IList<Student> studentList = new List<Student>>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 13} ,
+        new Student() { StudentID = 2, StudentName = "Moin",  Age = 21 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 18 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20} ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 15 } 
+    };
+
+var oldest = studentList.Max(s => s.Age);
+
+Console.WriteLine("Oldest Student Age: {0}", oldest);
+
+//> 7.5 Sum
+//> The Sum() method calculates the sum of numeric items in the collection.
+//> The following example demonstrates Sum() on primitive collection.
+
+IList<int> intList = new List<int>() { 10, 21, 30, 45, 50, 87 };
+
+var total = intList.Sum();
+
+Console.WriteLine("Sum: {0}", total);
+
+var sumOfEvenElements = intList.Sum(i => {
+			                    if(i%2 == 0)
+				                    return i;
+			
+			                    return 0;
+		                        });
+
+Console.WriteLine("Sum of Even Elements: {0}", sumOfEvenElements );
 
 
+//> 8. Element Operators
+/*
+> Element operators return a particular element from a sequence (collection).
+
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Method             ┃ Description                                                            ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ ElementAt          ┃ Returns the element at a specified index in a collection.              ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ ElementAtOrDefault ┃ Returns the element at an index or a default value if out of range.    ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ First              ┃ Returns the first element of a collection or the first that matches.   ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ FirstOrDefault     ┃ Returns the first element or a default value if no match is found.     ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Last               ┃ Returns the last element of a collection or the last that matches.     ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ LastOrDefault      ┃ Returns the last element or a default value if no match is found.      ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Single             ┃ Returns the only element. Throws if there are 0 or >1 elements.        ┃
+┣━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ SingleOrDefault    ┃ Returns the only element or default. Throws if there is more than 1.   ┃
+┗━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 8.1 ElementAt and ElementAtOrDefault
+> The ElementAt() method returns an element from the specified index from a given collection.
+If the specified index is out of the range of a collection then it will throw an Index out of range exception. Please note that index is a zero based index.
+
+> The ElementAtOrDefault() method also returns an element from the specified index from a collection
+if the specified index is out of range of a collection then it will return a default value of the data type instead of throwing an error.
+*/
+// > Example: LINQ ElementAt() and ElementAtOrDefault() - C#
+IList<int> intList = new List<int>() { 10, 21, 30, 45, 50, 87 };
+IList<string> strList = new List<string>() { "One", "Two", null, "Four", "Five" };
+
+Console.WriteLine("1st Element in intList: {0}", intList.ElementAt(0));
+Console.WriteLine("1st Element in strList: {0}", strList.ElementAt(0));
+		
+Console.WriteLine("2nd Element in intList: {0}", intList.ElementAt(1));
+Console.WriteLine("2nd Element in strList: {0}", strList.ElementAt(1));
+		
+Console.WriteLine("3rd Element in intList: {0}", intList.ElementAtOrDefault(2));
+Console.WriteLine("3rd Element in strList: {0}", strList.ElementAtOrDefault(2));
+
+Console.WriteLine("10th Element in intList: {0} - default int value", 
+                intList.ElementAtOrDefault(9));		
+Console.WriteLine("10th Element in strList: {0} - default string value (null)",
+                 strList.ElementAtOrDefault(9));		
+		
+		
+Console.WriteLine("intList.ElementAt(9) throws an exception: Index out of range");
+Console.WriteLine("-------------------------------------------------------------");
+Console.WriteLine(intList.ElementAt(9));
+
+//> 8.2 First and FirstOrDefault
+/*
+The First and FirstOrDefault method returns an element from the zeroth index in the collection i.e. the first element.
+Also, it returns an element that satisfies the specified condition
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Operator          ┃ Description                                                            ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ First             ┃ Returns the first element of a collection, or the first element that   ┃
+┃                   ┃ satisfies a condition. Throws an exception if no match is found.       ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ FirstOrDefault    ┃ Returns the first element that satisfies a condition, or a default     ┃
+┃                   ┃ value (like null) if no such element exists.                           ┃
+┗━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+First and FirstOrDefault has two overload methods. The first overload method doesn't take any input parameter and returns the first element in the collection. 
+The second overload method takes the lambda expression as predicate delegate to specify a condition and returns the first element that satisfies the specified condition.
+> First() & FirstOrDefault() Overloads:
+1. public static TSource First<TSource>(this IEnumerable<TSource> source);
+2. public static TSource First<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate);
+
+1. public static TSource FirstOrDefault<TSource>(this IEnumerable<TSource> source);
+2. public static TSource FirstOrDefault<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate);
+
+The First method returns the first element of a collection, or the first element that satisfies the specified condition using lambda expression or Func delegate.
+If a given collection is empty or does not include any element that satisfied the condition then it will throw InvalidOperation exception.
+The FirstOrDefault method does the same thing as First method. The only difference is that it returns default value of the data type of a collection if a collection is
+empty or doesn't find any element that satisfies the condition.
+*/
+//> Example: Example: LINQ First() - C# 
+IList<int> intList = new List<int>() { 7, 10, 21, 30, 45, 50, 87 };
+IList<string> strList = new List<string>() { null, "Two", "Three", "Four", "Five" };
+IList<string> emptyList = new List<string>();
+		
+Console.WriteLine("1st Element in intList: {0}", intList.First());
+Console.WriteLine("1st Even Element in intList: {0}", intList.First(i => i % 2 == 0));
+
+Console.WriteLine("1st Element in strList: {0}", strList.First());
+
+Console.WriteLine("emptyList.First() throws an InvalidOperationException");
+Console.WriteLine("-------------------------------------------------------------");
+Console.WriteLine(emptyList.First());
+
+//> Example: FirstOrDefault() - C#
+IList<int> intList = new List<int>() { 7, 10, 21, 30, 45, 50, 87 };
+IList<string> strList = new List<string>() { null, "Two", "Three", "Four", "Five" };
+IList<string> emptyList = new List<string>();
+		
+Console.WriteLine("1st Element in intList: {0}", intList.FirstOrDefault());
+Console.WriteLine("1st Even Element in intList: {0}",
+                                 intList.FirstOrDefault(i =&gt; i % 2 == 0));
+
+Console.WriteLine("1st Element in strList: {0}", strList.FirstOrDefault());
+
+Console.WriteLine("1st Element in emptyList: {0}", emptyList.FirstOrDefault());
+
+//> 8.3 Last and LastOrDefault
+/*
+The Last() and LastOrDefault() extension methods returns the last element from the collection.
+
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Operator          ┃ Description                                                            ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Last()            ┃ Returns the last element from a collection, or the last element that   ┃
+┃                   ┃ satisfies a condition. Throws exception if no element found.           ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ LastOrDefault()   ┃ Returns the last element from a collection, or the last element that   ┃
+┃                   ┃ satisfies a condition. Returns a default value if no element found.    ┃
+┗━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Method Signature:
+1. public static TSource Last<TSource>(this IEnumerable<TSource> source);
+2. public static TSource Last<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate);
+3. public static TSource LastOrDefault<TSource>(this IEnumerable<TSource> source);
+4. public static TSource LastOrDefault<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate);
+
+# it is the same as the First and FirstOrDefault method except that it returns the last element from the collection or last element that satisfies the specified condition.
+*/
+
+//> 8.4 Single & SingleOrDefault
+/*
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Operator          ┃ Description                                                                ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Single            ┃ Returns the only element. Throws InvalidOperationException if the          ┃
+┃                   ┃ collection is empty OR contains more than one matching element.            ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ SingleOrDefault   ┃ Returns the only element, or a default value if empty. However, it         ┃
+┃                   ┃ still throws if more than one matching element is found.                   ┃
+┗━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+The Single and SingleOrDefault have two overload methods. The first overload method doesn't take any input parameter and returns a single element in the collection.
+The second overload method takes the lambda expression as a predicate delegate that specifies the condition and returns a single element that satisfies the specified condition.
+> Single() & SingleOrDefault() Overloads:
+1. public static TSource Single<TSource>(this IEnumerable<TSource> source);
+2. public static TSource Single<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate);
+3. public static TSource SingleOrDefault<TSource>(this IEnumerable<TSource> source);
+4. public static TSource SingleOrDefault<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate);
+> Single
+The Single returns the only element from a collection, or the only element that satisfies the specified condition.
+If a given collection includes no elements or more than one elements then Single throws InvalidOperationException.
+> SingleOrDefault
+The SingleOrDefault method does the same thing as Single method.
+The only difference is that it returns default value of the data type of a collection if a collection is empty, 
+includes more than one element or finds no element or more than one element for the specified condition.
+*/
+
+//> Example: Single in method syntax C#
+IList<int> oneElementList = new List<int>() { 7 };
+IList<int> intList = new List<int>() { 7, 10, 21, 30, 45, 50, 87 };
+IList<string> strList = new List<string>() { null, "Two", "Three", "Four", "Five" };
+IList<string> emptyList = new List<string>();
+
+Console.WriteLine("The only element in oneElementList: {0}", oneElementList.Single());
+Console.WriteLine("The only element in oneElementList: {0}",
+             oneElementList.SingleOrDefault());
+
+Console.WriteLine("Element in emptyList: {0}", emptyList.SingleOrDefault());
+
+Console.WriteLine("The only element which is less than 10 in intList: {0}",
+             intList.Single(i => i &lt; 10));
+
+//Followings throw an exception
+//Console.WriteLine("The only Element in intList: {0}", intList.Single());
+//Console.WriteLine("The only Element in intList: {0}", intList.SingleOrDefault());
+//Console.WriteLine("The only Element in emptyList: {0}", emptyList.Single());
+
+//> 9. LINQ Equality Operator: SequenceEqual
+/*
+
+There is only one equality operator: SequenceEqual. 
+The SequenceEqual method checks whether the number of elements, value of each element and order of elements in two collections are equal or not.
+
+If the collection contains elements of primitive data types then it compares the values and number of elements,
+whereas collection with complex type elements, checks the references of the objects. So, if the objects have the same reference then they considered as 
+equal otherwise they are considered not equal.
+*/
+
+//> The following example demonstrates the SequenceEqual method with the collection of primitive data types.
+//> Example: SequenceEqual in Method Syntax C#
+IList<string> strList1 = new List<string>(){"One", "Two", "Three", "Four", "Three"};
+
+IList<string> strList2 = new List<string>(){"One", "Two", "Three", "Four", "Three"};
+
+bool isEqual = strList1.SequenceEqual(strList2); // returns true
+Console.WriteLine(isEqual);
+
+//> The SequenceEqual extension method checks the references of two objects to determine whether two sequences are equal or not.
+//> This may give wrong result. Consider following example:
+//> Example: SequenceEqual in C#
+Student std = new Student() { StudentID = 1, StudentName = "Bill" };
+
+IList<Student> studentList1 = new List<Student>(){ std };
+
+IList<Student> studentList2 = new List<Student>(){ std };
+       
+bool isEqual = studentList1.SequenceEqual(studentList2); // returns true
+
+Student std1 = new Student() { StudentID = 1, StudentName = "Bill" };
+Student std2 = new Student() { StudentID = 1, StudentName = "Bill" };
+
+IList<Student> studentList3 = new List<Student>(){ std1};
+
+IList<Student> studentList4 = new List<Student>(){ std2 };
+       
+isEqual = studentList3.SequenceEqual(studentList4);// returns false
+/*
+# In the above example, the studentList1 and studentList2 contains the same student object, std. 
+# So studentList1.SequenceEqual(studentList2) returns true. But, stdList1 and stdList2 contains two seperate student object, std1 and std2.
+# So now, stdList1.SequenceEqual(stdList2) will return false even if std1 and std2 contain the same value.
+
+To compare the values of two collection of complex type (reference type or object), you need to implement IEqualityComparer<T> interface as shown below.
+
+*/
+//> Example: IEqualityComparer C#:
+class StudentComparer : IEqualityComparer<Student>
+{
+    public bool Equals(Student x, Student y)
+    {
+        if (x.StudentID == y.StudentID && x.StudentName.ToLower() == y.StudentName.ToLower())
+            return true;
+
+        return false;
+    }
+
+    public int GetHashCode(Student obj)
+    {
+        return obj.GetHashCode();
+    }
+}
+//! Now, you can use above StudentComparer class in SequenceEqual extension method as a second parameter to compare the values:
+//> Example: Compare object type elements using SequenceEqual C#
+IList<Student> studentList1 = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+IList<Student> studentList2 = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+// following returns true
+bool isEqual = studentList1.SequenceEqual(studentList2, new StudentComparer());
+
+//> 10. Concatenation Operator: Concat
+//> The Concat() method appends two sequences of the same type and returns a new sequence (collection).
+//> Example: Concat in C#
+IList<string> collection1 = new List<string>() { "One", "Two", "Three" };
+IList<string> collection2 = new List<string>() { "Five", "Six"};
+
+var collection3 = collection1.Concat(collection2);
+
+foreach (string str in collection3)
+    Console.WriteLine(str);
+
+//> 11. Generation Operator: 
+//> 11.1 DefaultIfEmpty
+// The DefaultIfEmpty() method returns a new collection with the default value if the given collection on which DefaultIfEmpty() is invoked is empty.
+// Another overload method of DefaultIfEmpty() takes a value parameter that should be replaced with default value.
+// Consider the following example.
+
+//> Example: DefaultIfEmpty in C#
+IList<string> emptyList = new List<string>();
+
+var newList1 = emptyList.DefaultIfEmpty(); 
+var newList2 = emptyList.DefaultIfEmpty("None"); 
+
+Console.WriteLine("Count: {0}" , newList1.Count());
+Console.WriteLine("Value: {0}" , newList1.ElementAt(0));
+
+Console.WriteLine("Count: {0}" , newList2.Count());
+Console.WriteLine("Value: {0}" , newList2.ElementAt(0));
+
+/*
+Output:
+Count: 1
+Value:
+Count: 1
+Value: None
+> In the above example, emptyList.DefaultIfEmpty() returns a new string collection with one element whose value is null because null is a default value of string. 
+> Another method emptyList.DefaultIfEmpty("None") returns a string collection with one element whose value is "None" instead of null.
+*/
+
+//> 11.2 Empty, Range, Repeat
+/*
+LINQ includes generation operators DefaultIfEmpty, Empty, Range & Repeat.
+! The Empty, Range & Repeat methods are not extension methods for IEnumerable or IQueryable but they are simply static methods defined in a static class Enumerable.
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Method        ┃ Description                                                          ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Empty         ┃ Returns an empty collection of the specified type. Useful for        ┃
+┃               ┃ returning a "none" result without dealing with null references.      ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Range         ┃ Generates a sequence of integral numbers within a specified range.   ┃
+┃               ┃ (e.g., Enumerable.Range(1, 5) creates {1, 2, 3, 4, 5}).              ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Repeat        ┃ Generates a collection that contains one repeated value a specified  ┃
+┃               ┃ number of times. (e.g., Repeat("Hi", 3) creates {"Hi", "Hi", "Hi"}). ┃
+┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 11.2.1 Empty
+The Empty() method is not an extension method of IEnumerable or IQueryable like other LINQ methods.
+It is a static method included in Enumerable static class. So, you can call it the same way as other static methods like Enumerable.Empty<TResult>().
+The Empty() method returns an empty collection of a specified type as shown below.
+*/
+//> Example: Enumerable.Empty()
+var emptyCollection1 = Enumerable.Empty<string>();
+var emptyCollection2 = Enumerable.Empty<Student>();
+
+Console.WriteLine("Count: {0} ", emptyCollection1.Count());
+Console.WriteLine("Type: {0} ", emptyCollection1.GetType().Name );
+
+Console.WriteLine("Count: {0} ",emptyCollection2.Count());
+Console.WriteLine("Type: {0} ", emptyCollection2.GetType().Name );
+
+//> 11.2.2 Range
+// The Range() method returns a collection of IEnumerable<T> type with specified number of elements and sequential values starting from the first element.
+//> Example: Enumerable.Range()
+                            //starting value, number of elements
+var intCollection = Enumerable.Range(10, 10);
+Console.WriteLine("Total Count: {0} ", intCollection.Count());
+
+for(int i = 0; i < intCollection.Count(); i++)
+    Console.WriteLine("Value at index {0} : {1}", i, intCollection.ElementAt(i));
+
+//> 11.2.3 Repeat
+// The Repeat() method generates a collection of IEnumerable<T> type with specified number of elements and each element contains same specified value.
+
+//>  The Repeat() method generates a collection of IEnumerable<T> type with specified number of elements and each element contains same specified value.
+
+//> Example: Repeat
+var intCollection = Enumerable.Repeat<int>(10, 10);
+Console.WriteLine("Total Count: {0} ", intCollection.Count());
+
+for(int i = 0; i < intCollection.Count(); i++)
+    Console.WriteLine("Value at index {0} : {1}", i, intCollection.ElementAt(i));
+
+//# it is the same as range but it returns the same value for each element in the collection whereas Range() returns sequential values for each element in the collection.
+
+//> 12. Set Operator:
+/*
+The following table lists all Set operators available in LINQ.
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Operator      ┃ Usage / Description                                                  ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Distinct      ┃ Removes all duplicate values from a single collection, leaving only  ┃
+┃               ┃ unique elements.                                                     ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Except        ┃ Returns the difference between two sequences. It picks elements from ┃
+┃               ┃ the first list that do not exist in the second list.                 ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Intersect     ┃ Returns the intersection of two sequences. It only picks elements    ┃
+┃               ┃ that are present in both collections.                                ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Union         ┃ Combines two sequences into one and removes duplicates. It returns   ┃
+┃               ┃ unique elements that appear in either list.                          ┃
+┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 12.1 Distinct
+The Distinct extension method returns a new collection of unique elements from the given collection.
+*/
+//> Example: Distinct C#
+IList<string> strList = new List<string>(){ "One", "Two", "Three", "Two", "Three" };
+
+IList<int> intList = new List<int>(){ 1, 2, 3, 2, 4, 4, 3, 5 };
+
+var distinctList1 = strList.Distinct();
+
+foreach(var str in distinctList1)
+    Console.WriteLine(str);
+
+var distinctList2 = intList.Distinct();
+
+foreach(var i in distinctList2)
+    Console.WriteLine(i);
+
+/*
+! important 
+he Distinct extension method doesn't compare values of complex type objects.
+You need to implement IEqualityComparer<T> interface in order to compare the values of complex types.
+In the following example, StudentComparer class implements IEqualityComparer<Student> to compare Student objects.
+*/
+//> Example: Implement IEqualityComparer in C#
+public class Student 
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+    public int Age { get; set; }
+}
+
+class StudentComparer : IEqualityComparer<Student>
+{
+    public bool Equals(Student x, Student y)
+    {
+        if (x.StudentID == y.StudentID 
+                && x.StudentName.ToLower() == y.StudentName.ToLower())
+            return true;
+
+        return false;
+    }
+
+    public int GetHashCode(Student obj)
+    {
+        return obj.StudentID.GetHashCode();
+    }
+}
+//> Now, you can pass an object of the above StudentComparer class in the Distinct() method as a parameter to compare the Student objects as shown below.
+//> Example: Distinct in C#
+IList<Student> studentList = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+
+var distinctStudents = studentList.Distinct(new StudentComparer()); 
+
+foreach(Student std in distinctStudents)
+    Console.WriteLine(std.StudentName);
+
+//> 12.2 Except
+/*
+The Except() method requires two collections.
+It returns a new collection with elements from the first collection which do not exist in the second collection (parameter collection).
+*/
+//> Example: Except in method syntax C#
+IList<string> strList1 = new List<string>(){"One", "Two", "Three", "Four", "Five" };
+IList<string> strList2 = new List<string>(){"Four", "Five", "Six", "Seven", "Eight"};
+
+var result = strList1.Except(strList2);
+
+foreach(string str in result)
+        Console.WriteLine(str);
+
+/*
+! important 
+The Except extension method doesn't return the correct result for the collection of complex types.
+You need to implement IEqualityComparer interface in order to get the correct result from Except method.
+Implement IEqualityComparer interface for Student class as shown below:
+*/
+//> Example: IEqualityComparer with Except method C#
+public class Student 
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+    public int Age { get; set; }
+}
+
+class StudentComparer : IEqualityComparer<Student>
+{
+    public bool Equals(Student x, Student y)
+    {
+        if (x.StudentID == y.StudentID && x.StudentName.ToLower() == y.StudentName.ToLower())
+            return true;
+
+        return false;
+    }
+
+    public int GetHashCode(Student obj)
+    {
+        return obj.StudentID.GetHashCode();
+    }
+}
+
+IList<Student> studentList1 = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+IList<Student> studentList2 = new List<Student>() { 
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+var resultedCol = studentList1.Except(studentList2,new StudentComparer()); 
+
+foreach(Student std in resultedCol)
+    Console.WriteLine(std.StudentName);
+
+//> 12.3 Intersect
+/*
+The Intersect extension method requires two collections.
+It returns a new collection that includes common elements that exists in both the collection. Consider the following example.
+*/
+//> Example: Intersect in method syntax C#
+IList<string> strList1 = new List<string>() { "One", "Two", "Three", "Four", "Five" };
+IList<string> strList2 = new List<string>() { "Four", "Five", "Six", "Seven", "Eight"};
+
+var result = strList1.Intersect(strList2);
+
+foreach(string str in result)
+        Console.WriteLine(str);
+
+/*
+! important 
+The Intersect extension method doesn't return the correct result for the collection of complex types.
+You need to implement IEqualityComparer interface in order to get the correct result from Intersect method.
+Implement IEqualityComparer interface for Student class as shown below:
+*/
+//> Example: Use IEqualityComparer with Intersect in C#
+
+public class Student 
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+    public int Age { get; set; }
+}
+
+class StudentComparer : IEqualityComparer<Student>
+{
+    public bool Equals(Student x, Student y)
+    {
+        if (x.StudentID == y.StudentID && 
+                        x.StudentName.ToLower() == y.StudentName.ToLower())
+            return true;
+
+        return false;
+    }
+
+    public int GetHashCode(Student obj)
+    {
+        return obj.StudentID.GetHashCode();
+    }
+}
+IList<Student> studentList1 = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+IList<Student> studentList2 = new List<Student>() { 
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+var resultedCol = studentList1.Intersect(studentList2, new StudentComparer()); 
+
+foreach(Student std in resultedCol)
+    Console.WriteLine(std.StudentName);
+
+//> 12.4 Union
+/*
+The Union extension method requires two collections and returns a new collection that includes distinct elements from both the collections. Consider the following example.
+*/
+//> Example: Union in method syntax C#
+IList<string> strList1 = new List<string>() { "One", "Two", "three", "Four" };
+IList<string> strList2 = new List<string>() { "Two", "THREE", "Four", "Five" };
+
+var result = strList1.Union(strList2);
+
+foreach(string str in result)
+        Console.WriteLine(str);
+
+/*
+! important 
+The Union extension method doesn't return the correct result for the collection of complex types.
+You need to implement IEqualityComparer interface in order to get the correct result from Union method.
+Implement IEqualityComparer interface for Student class as below:
+*/
+//> Example: Union operator with IEqualityComparer:
+public class Student 
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+    public int Age { get; set; }
+}
+
+class StudentComparer : IEqualityComparer<Student>
+{
+    public bool Equals(Student x, Student y)
+    {
+        if (x.StudentID == y.StudentID && x.StudentName.ToLower() == y.StudentName.ToLower())
+            return true;
+
+        return false;
+    }
+
+    public int GetHashCode(Student obj)
+    {
+        return obj.StudentID.GetHashCode();
+    }
+}
+IList<Student> studentList1 = new List<Student>() { 
+        new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+        new Student() { StudentID = 2, StudentName = "Steve",  Age = 15 } ,
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+IList<Student> studentList2 = new List<Student>() { 
+        new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+        new Student() { StudentID = 5, StudentName = "Ron" , Age = 19 } 
+    };
+
+var resultedCol = studentList1.Union(studentList2, new StudentComparer()); 
+
+foreach(Student std in resultedCol)
+    Console.WriteLine(std.StudentName);
+
+
+//> 13. Partitioning Operators
+
+/*
+The partitioning operators split the sequence (collection) into two parts and return one of the parts.
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Method        ┃ Description                                                                ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Skip          ┃ Skips elements up to a specified position starting from the first element. ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ SkipWhile     ┃ Skips elements based on a condition until an element does not satisfy it.  ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Take          ┃ Takes elements up to a specified position starting from the first element. ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ TakeWhile     ┃ Returns elements until an element does not satisfy the condition.          ┃
+┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+*/
+
+//> 13.1 Skip and SkipWhile
+// The Skip() method skips the specified number of element starting from first element and returns rest of the elements.
+//> Example: Skip() - C#
+IList<int> numbers = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+var skipResult = numbers.Skip(3); // Skip first three elements
+
+foreach(int num in skipResult)
+    Console.WriteLine(num);
+// Output: 4,5,6,7,8,9,10
+
+//> the SkipWhile 
+/*
+As the name suggests, the SkipWhile() extension method in LINQ skip elements in the collection till the specified condition is true..
+It returns a new collection that includes all the remaining elements once the specified condition becomes false for any element.
+The SkipWhile() method has two overload methods. 
+One method accepts the predicate of Func<TSource, bool> type and other overload method accepts the predicate Func<TSource, int, bool> type that pass the index of an element.
+In the following example, SkipWhile() method skips all elements till it finds a string whose length is equal or more than 4 characters.
+*/
+
+IList<string> strList = new List<string>() { 
+                                            "One", 
+                                            "Two", 
+                                            "Three", 
+                                            "Four", 
+                                            "Five", 
+                                            "Six"  };
+
+var resultList = strList.SkipWhile(s => s.Length < 4);
+
+foreach(string str in resultList)
+        Console.WriteLine(str); // output => Three Four Five Six
+
+
+//> 13.2 Take and TakeWhile
+/*
+> Take
+The partitioning operators split the sequence (collection) into two parts and returns one of the parts.
+The Take() extension method returns the specified number of elements starting from the first element.
+The Take & TakeWhile operator is Not Supported in C# query syntax. 
+However, you can use Take/TakeWhile method on query variable or wrap whole query into brackets and then call Take/TakeWhile.
+*/
+//> Example: Take() in C#
+IList<string> strList = new List<string>(){ "One", "Two", "Three", "Four", "Five" };
+
+var newList = strList.Take(2);
+
+foreach(var str in newList)
+    Console.WriteLine(str); // output => One Two
+
+//> TakeWhile
+/*
+The TakeWhile() extension method returns elements from the given collection until the specified condition is true.
+If the first element itself doesn't satisfy the condition then returns an empty collection.
+The TakeWhile method has two overload methods.
+One method accepts the predicate of Func<TSource, bool> type and the other overload method accepts the predicate Func<TSource, int, bool> type that passes the index of element.
+In the following example, TakeWhile() method returns a new collection that includes all the elements till it finds a string whose length less than 4 characters.
+*/
+//> Example: TakeWhile in C#
+IList<string> strList = new List<string>() { 
+                                            "Three", 
+                                            "Four", 
+                                            "Five", 
+                                            "Hundred"  };
+
+var result = strList.TakeWhile(s => s.Length > 4);
+
+foreach(string str in result)
+        Console.WriteLine(str);
+
+//> 14. Conversion Operators
+/*
+The Conversion operators in LINQ are useful in converting the type of the elements in a sequence (collection).
+There are three types of conversion operators: 
+1. As operators (AsEnumerable and AsQueryable).
+2. To operators (ToArray, ToDictionary, ToList and ToLookup).
+3. Casting operators (Cast and OfType).
+The following table lists all the conversion operators.
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Method            ┃ Description                                                      ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ AsEnumerable      ┃ Returns the sequence as IEnumerable<T>. Forces local evaluation. ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ AsQueryable       ┃ Converts IEnumerable to IQueryable for remote query providers.   ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Cast              ┃ Converts non-generic to generic collection. Throws on failure.   ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ OfType            ┃ Filters a collection based on type; skips incompatible elements. ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ ToArray           ┃ Executes query immediately and converts to an Array.             ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ ToDictionary      ┃ Creates a Dictionary based on key selector functions.            ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ ToList            ┃ Executes query immediately and converts to a List<T>.            ┃
+┣━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ ToLookup          ┃ Groups elements into a 1:N Lookup; execution is immediate.       ┃
+┗━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> 14.1 AsEnumerable & AsQueryable
+The AsEnumerable and AsQueryable methods cast or convert a source object to IEnumerable<T> or IQueryable<T> respectively.
+*/
+//> Example: AsEnumerable & AsQueryable operator in C#:
+class Program
+{
+
+    static void ReportTypeProperties<T>(T obj)
+    {
+        Console.WriteLine("Compile-time type: {0}", typeof(T).Name);
+        Console.WriteLine("Actual type: {0}", obj.GetType().Name);
+    }
+
+    static void Main(string[] args)
+    {
+        Student[] studentArray = { 
+                new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+                new Student() { StudentID = 2, StudentName = "Steve",  Age = 21 } ,
+                new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+                new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+                new Student() { StudentID = 5, StudentName = "Ron" , Age = 31 } ,
+            };   
+            
+        ReportTypeProperties( studentArray);
+        ReportTypeProperties(studentArray.AsEnumerable());
+        ReportTypeProperties(studentArray.AsQueryable());   
+    }
+}
+//! As you can see in the above example AsEnumerable and AsQueryable methods convert compile time type to IEnumerable and IQueryable respectively
+
+//> 14.2 Cast
+// Cast does the same thing as AsEnumerable<T>. It cast the source object into IEnumerable<T>.
+//> Example: Cast operator in C#
+class Program
+{
+
+    static void ReportTypeProperties<T>(T obj)
+    {
+        Console.WriteLine("Compile-time type: {0}", typeof(T).Name);
+        Console.WriteLine("Actual type: {0}", obj.GetType().Name);
+    }
+
+    static void Main(string[] args)
+    {
+        Student[] studentArray = { 
+                new Student() { StudentID = 1, StudentName = "John", Age = 18 } ,
+                new Student() { StudentID = 2, StudentName = "Steve",  Age = 21 } ,
+                new Student() { StudentID = 3, StudentName = "Bill",  Age = 25 } ,
+                new Student() { StudentID = 4, StudentName = "Ram" , Age = 20 } ,
+                new Student() { StudentID = 5, StudentName = "Ron" , Age = 31 } ,
+            };   
+
+        ReportTypeProperties(studentArray);
+        ReportTypeProperties(studentArray.Cast<Student>());
+    }
+}
+//! As you can see in the above example, studentArray.Cast<Student>() is the same as (IEnumerable<Student>)studentArray but Cast<Student>() is more readable.
+
+//> 14.3 To Operators: ToArray(), ToList(), ToDictionary()
+/*
+As the name suggests, ToArray(), ToList(), ToDictionary() method converts a source object into an array, List or Dictionary respectively.
+To operators force the execution of the query. It forces the remote query provider to execute a query and get the result from the underlying data source e.g. SQL Server database.
+*/
+IList<string> strList = new List<string>() { 
+                                            "One", 
+                                            "Two", 
+                                            "Three", 
+                                            "Four", 
+                                            "Three" 
+                                            };
+
+string[] strArray = strList.ToArray<string>();// converts List to Array
+
+IList<string> list = strArray.ToList<string>(); // converts array into list
+
+
+//> ToDictionary - Converts a Generic list to a generic dictionary:
+//> Example: ToDictionary in C#:
+IList<Student> studentList = new List<Student>() { 
+                    new Student() { StudentID = 1, StudentName = "John", age = 18 } ,
+                    new Student() { StudentID = 2, StudentName = "Steve",  age = 21 } ,
+                    new Student() { StudentID = 3, StudentName = "Bill",  age = 18 } ,
+                    new Student() { StudentID = 4, StudentName = "Ram" , age = 20 } ,
+                    new Student() { StudentID = 5, StudentName = "Ron" , age = 21 } 
+                };
+
+//following converts list into dictionary where StudentId is a key
+IDictionary<int, Student> studentDict = 
+                                studentList.ToDictionary<Student, int>(s => s.StudentID); 
+
+foreach(var key in studentDict.Keys)
+	Console.WriteLine("Key: {0}, Value: {1}", 
+                                key, (studentDict[key] as Student).StudentName);
