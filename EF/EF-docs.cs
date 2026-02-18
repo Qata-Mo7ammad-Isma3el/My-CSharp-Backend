@@ -515,4 +515,1545 @@ public class Student
     public int GradeId { get; set; }
     public Grade Grade { get; set; }
 }
+//# Now, to sync our "SchoolDB" database with these changes, execute the following commands:
+//> 1. use this command "add-migration "ModifiedStudentEntity"" in Package Manager Console or PowerShell
+//> 2. Now, to update the database schema, execute the "update-database" command in PMC/PowerShell. This will add the columns in the Student table
 
+//# for the .net CLI, you can use the following command to add migration and update database.
+//> 1. use this command "dotnet ef migrations add AddStudentDetails" in .Net CLI
+//> 2. use this command "dotnet ef database update" in .Net CLI
+
+//> Reverting Migration
+/*
+For some reason, if you want to revert the database to any of the previous states then you can do it by using the update-database <migration-name> command.
+
+For example, we modified the Student entity and added some more properties. But now we want to revert it back to the state of the "InitialSchoolDB" migration.
+We can do it by using the following command:
+> 1. use this command "Update-database "InitialSchoolDB"" in Package Manager Console or PowerShell
+> 2. use this command "dotnet ef database update InitialSchoolDB" in .Net CLI
+
+! The above command will revert the database based on a migration named InitialSchoolDB and remove all the changes applied by the second migration ModifiedStudentEntity.
+! This will also remove ModifiedStudentEntity entry from the __EFMigrationsHistory table in the database.
+*/
+
+//> List All Migrations
+//> Use the following migration command to get the list of all migrations.
+//> 1. use this command "Get-Migration" in Package Manager Console or PowerShell
+//> 2. use this command "dotnet ef migrations list" in .Net CLI
+
+//> Removing a Migration
+/*
+> Above, we have reverted the second migration named "ModifiedStudentEntity".
+> We can remove the last migration if it is not applied to the database. Let's remove the "ModifiedStudentEntity" file using the following command.
+> 1. use this command "Remove-Migration" in Package Manager Console or PowerShell
+> 2. use this command "dotnet ef migrations remove" in .Net CLI
+
+The above commands will remove the last migration and revert the model snapshot to the previous migration. 
+!Please note that if a migration is already applied to the database, then it will throw an exception.
+*/
+
+
+//> 7. Generate SQL Script in Entity Framework Core
+/*
+Here you will learn how to generate a SQL script from the EF Core model using a migration which you can use to execute manually or add to the source control.
+In the previous Migrations chapter, we added the migration and created the "SchoolDB" database.
+! It is recommended to deploy migrations to a production database by generating SQL scripts.
+The following table lists PMC/PowerShell commands and .NET Core CLI commands to generate a SQL script from the applied migrations.
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ PMC Command (Visual Studio) ┃ .NET Core CLI Command                    ┃ Usage / Description                                                           ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Script-Migration            ┃ dotnet ef migrations script              ┃ Generates a SQL Script for all migrations                                     ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Script-Migration <From>     ┃ dotnet ef migrations script <From>       ┃ Generates a SQL script from the given migration to the latest migration.      ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Script-Migration <F> <T>    ┃ dotnet ef migrations script <F> <T>      ┃ Generates a SQL script from the specified from migration to the to migration. ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Script-Migration -Idempotent┃ dotnet ef migrations script --idempotent ┃ Generates idempotent scripts which check for existence before applying.       ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Get-Migration               ┃ dotnet ef migrations list                ┃ List all existing migrations.                                                 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+! Execute the following migration command to generate a SQL script for the entire database in PMC or PowerShell terminal.
+> use this command "Script-Migration" in Package Manager Console or PowerShell
+> use this command "dotnet ef migrations script" in .Net CLI
+*/
+
+//> 8. PMC/PowerShell Commands for Migrations
+/*
+Migration commands in Entity Framework Core can be executed using the Package Manager Console in Visual Studio. steps:
+1. Open the Package Manager Console from menu Tools
+2. navigate to NuGet Package Manager
+3. go to Package Manager Console in Visual Studio to execute the following commands.
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ PMC Command                  ┃ Usage / Description                                                    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Get-Help entityframework     ┃ Displays information about entity framework commands.                  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Add-Migration <name>         ┃ Creates a migration by adding a migration snapshot.                    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Remove-Migration             ┃ Removes the last migration snapshot.                                   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Update-Database              ┃ Updates the database schema based on the last migration snapshot.      ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Script-Migration             ┃ Generates a SQL script using all the migration snapshots.              ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Scaffold-DbContext           ┃ Generates a DbContext and entity type classes for a specified database.┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Get-DbContext                ┃ Gets information about a DbContext type.                               ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Drop-Database                ┃ Drops the database.                                                    ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+
+//> 9. Command Line Interface Commands for Migrations
+/*
+The .NET Core CLI (Command Line Interface) tools for Entity Framework Core perform design-time development tasks such as migrations, script generation, 
+and generating model code from an existing database. It can be used on any platform.
+Install the .NET Core CLI tools for EF Core using the following command:
+> use this command "dotnet tool install --global dotnet-ef" in the terminal to install the .NET Core CLI tools for EF Core.
+After installing the tools, you can execute the following commands in the terminal to perform various migration-related tasks.
+! note that you can use this command "dotnet ef --help" to get the list of all available commands and their usage.
+there are three main EF commands available:
+> 1. database 
+> 2. dbcontext 
+> 3. migrations.
+The following table lists all EF commands and sub-commands.
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Command       ┃ Sub-Command       ┃ Usage / Description                                    ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ database      ┃ drop              ┃ Drops the database.                                    ┃
+┃               ┃ update            ┃ Updates the database to a specified migration.         ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ dbcontext     ┃ info              ┃ Gets information about a DbContext type.               ┃
+┃               ┃ list              ┃ Lists available DbContext types.                       ┃
+┃               ┃ scaffold          ┃ Scaffolds a DbContext and entity types for a database. ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ migrations    ┃ add               ┃ Adds a new migration.                                  ┃
+┃               ┃ list              ┃ Lists available migrations.                            ┃
+┃               ┃ remove            ┃ Removes the last migration.                            ┃
+┃               ┃ script            ┃ Generates a SQL script from migrations.                ┃
+┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+! you can use this command ""dotnet ef <command> <sub-command> --help" to get the usage of a specific command and sub-command.
+> For example, you can use this command "dotnet ef migrations add --help" to get the usage of the "add" sub-command of the "migrations" command.
+*/
+
+//> 10. Entity Framework Core: Saving Data in Connected Scenario
+/*
+> Entity Framework Core provides different ways to add, update, or delete data in the underlying database.
+> An entity contains data in its scalar property will be either inserted or updated or deleted based on its EntityState.
+
+There are two scenarios to save an entity data: 
+# 1. connected. 
+# 2. disconnected.
+• In the connected scenario, the same instance of DbContext is used in retrieving and saving entities.
+• whereas this is different in the disconnected scenario. 
+
+• Entity Framework builds and executes INSERT, UPDATE, or DELETE statements for the entities whose EntityState is Added, Modified, or Deleted when the DbContext.SaveChanges() 
+    method is called.
+• In the connected scenario, an instance of DbContext keeps track of all the entities and so it automatically sets an appropriate EntityState of each entity whenever an entity is 
+    created, modified, or deleted.
+*/
+
+//> Insert Data
+//> The DbSet.Add and DbContext.Add methods add a new entity to a context (instance of DbContext) which will insert a new record in the database when you call the SaveChanges() method.
+
+using (var context = new SchoolContext()) //> this is the connected scenario as we are using the same context instance to add and save the entity.
+{
+    var std = new Student()
+    {
+        FirstName = "Bill",
+        LastName = "Gates"
+    };
+    context.Students.Add(std);
+    // or
+    // context.Add<Student>(std);
+    context.SaveChanges();
+}
+/*
+> what is happening in the above code:
+1. context.Students.Add(std) adds a newly created instance of the Student entity to a context with Added EntityState.
+2. EF Core introduced the new DbContext.Add method, which does the same thing as the DbSet.Add method.
+3. After this, the SaveChanges() method builds and executes the following INSERT statement to the database.
+
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> INSERT INTO [Students] ( [FirstName], [LastName])
+> VALUES (@p0, @p1);
+> SELECT [StudentId]
+> FROM [Students]
+> WHERE @@ROWCOUNT = 1 AND [StudentId] = scope_identity();',N
+> '@p0 nvarchar(4000), @p1 nvarchar(4000) ',@p0=N'Bill',@p1=N'Gates'
+> go
+> '''
+# lets break down the above SQL statement:
+> 1. exec sp_executesql: This is SQL Server's built-in stored procedure for executing a parameterized SQL string safely
+> 2. SET NOCOUNT ON; This prevents SQL Server from sending messages about the number of rows affected by the query, which can improve performance.
+> 3. The actual insert. 
+> INSERT INTO [Students] ([FirstName], [LastName]) 
+> VALUES (@p0, @p1);  
+
+!  Notice EF excludes StudentId from the column list because it's an identity (auto-increment) column — SQL Server will generate it automatically.
+>4. After inserting, EF immediately retrieves the newly generated primary key 
+> SELECT [StudentId]
+> FROM [Students]
+> WHERE @@ROWCOUNT = 1 AND [StudentId] = scope_identity();
+> @@ROWCOUNT = 1 — confirms exactly one row was inserted successfully
+> scope_identity() — gets the last identity value generated in the current scope, which is the StudentId just created
+! EF uses this returned StudentId to update your std object in memory, so after SaveChanges() your object automatically has the new ID populated. 
+
+> 5. The parameter declaration:
+> '@p0 nvarchar(4000), @p1 nvarchar(4000)'
+> Declares the types of the two parameters. 
+> EF uses nvarchar(4000) by default for strings (Unicode), and uses nvarchar(max) for strings longer than 4000 characters.
+
+> 6. The parameter values:
+@p0=N'Bill', @p1=N'Gates'
+! The actual values from your C# std object — the N prefix means they're Unicode strings, matching the nvarchar type.
+
+# In summary
+> 1. when you call SaveChanges(), EF translates your C# object into this safe, parameterized SQL that inserts the row
+> 2. hands the new database-generated ID back to your application automatically.
+*/
+
+//> Updating Data
+/*
+> In the connected scenario, EF Core API keeps track of all the entities retrieved using a context.
+> Therefore, when you edit entity data, EF automatically marks EntityState to Modified, which results in an updated statement in the database when you call the SaveChanges() method.
+
+*/
+using (var context = new SchoolContext())
+{
+    var std = context.Students.First<Student>(); 
+    std.FirstName = "Steve";
+    context.SaveChanges();
+}
+
+/*
+> In the above example, we retrieve the first student from the database using context.Students.First<student>().
+> As soon as we modify the FirstName, the context sets its EntityState to Modified because of the modification performed in the scope of the DbContext instance (context).
+> So, when we call the SaveChanges() method, it builds and executes the following Update statement in the database.
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> UPDATE [Students] SET [FirstName] = @p0
+> WHERE [StudentId] = @p1;
+> SELECT @@ROWCOUNT;
+> ',N'@p1 int,@p0 nvarchar(4000)',@p1=1,@p0=N'Steve'
+> Go
+> '''
+In an update statement, EF Core API includes the properties with modified values, the rest being ignored.
+In the above example, only the FirstName property was edited, so an update statement includes only the FirstName column.
+*/
+
+//> Deleting Data
+//> Use the DbSet.Remove() or DbContext.Remove methods to delete a record in the database table.
+using (var context = new SchoolContext())
+{
+    var std = context.Students.First<Student>();
+    context.Students.Remove(std);
+
+    // or
+    // context.Remove<Student>(std);
+
+    context.SaveChanges();
+}
+
+/*
+> In the above example, context.Students.Remove(std) or context.Remove<Student>(std) marks the std entity object as Deleted.
+Therefore, EF Core will build and execute the following DELETE statement in the database.
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> DELETE FROM [Students]
+> WHERE [StudentId] = @p0;
+> SELECT @@ROWCOUNT;
+> ',N'@p0 int',@p0=1
+> Go
+> '''
+
+! Thus, it is very easy to add, update, or delete data in Entity Framework Core in the connected scenario.
+*/
+
+//> some advanced topics related to saving data, deleting data, and updating data ill bit them here to just now that they are exist:
+//# 1. EF-Core Bulk Insert
+//# 2. EF-Core Execute Delete
+//# 3. EF-Core Execute Update 
+//> ill not study them now because they are advanced and now i won't need them, but i will study them later when i need them.
+
+
+
+//> 11. Querying in Entity Framework Core
+/*
+> Querying in Entity Framework Core remains the same as in EF 6.x, with more optimized SQL queries and the ability to include C# functions into LINQ-to-Entities queries.
+> C# Functions in Queries
+! EF Core has a new feature in LINQ-to-Entities where we can include C# functions in the query. This was not possible in EF 6.
+
+! Note that linq works with IEnumerable and IQueryable:
+> 1. IEnumerable:
+It is used for in-memory collections and does not support deferred execution.
+When you execute a LINQ query on an IEnumerable collection, the entire collection is loaded into memory, and then the query is executed against that in-memory data.
+> 2. IQueryable: 
+It is used for querying data from external sources, such as databases or remote services. 
+It supports deferred execution, which means that the query is not executed until you iterate over the results.
+When you execute a LINQ query on an IQueryable collection, the query is translated into a format that the underlying data source can understand (e.g., SQL for databases) and executed
+on the server side, returning only the relevant data to the client.
+! Deferred execution in LINQ means that a query is not executed when it is declared or created;
+! instead, the query logic is stored, and the execution is delayed until the actual results are needed or requested.
+*/
+private static void Main(string[] args)
+{
+    var context = new SchoolContext();
+    var studentsWithSameName = context.Students
+                                    .Where(s => s.FirstName == GetName())
+                                    .ToList();
+}
+public static string GetName() {
+    return "Bill";
+}
+
+/*
+In the above L2E query, we have included the GetName() C# function in the Where clause. This will execute the following query in the database:
+> '''
+> exec sp_executesql N'SELECT [s].[StudentId], [s].[DoB], [s].[FirstName], 
+>     [s].[GradeId], [s].[LastName], [s].[MiddleName]
+> FROM [Students] AS [s]
+> WHERE [s].[FirstName] = @__GetName_0',N'@__GetName_0 nvarchar(4000)',
+>     @__GetName_0=N'Bill'
+> Go
+> '''
+*/
+
+//> Eager Loading
+/*
+Entity Framework Core supports eager loading of related entities, same as EF 6, using the Include() extension method and projection query. 
+In addition to this, it also provides the ThenInclude() extension method to load multiple levels of related entities. (EF 6 does not support the ThenInclude() method.)
+*/
+//> Include
+//> Unlike EF 6, we can specify a lambda expression as a parameter in the Include() method to specify a navigation property as shown below.
+var context = new SchoolContext();
+
+var studentWithGrade = context.Students
+                           .Where(s => s.FirstName == "Bill")
+                           .Include(s => s.Grade)
+                           .FirstOrDefault();
+
+/*
+In the above example, .Include(s => s.Grade) passes the lambda expression s => s.Grade to specify a reference property to be loaded with Student entity data from the database 
+in a single SQL query. The above query executes the following SQL query in the database.
+
+> '''
+> SELECT TOP(1) [s].[StudentId], [s].[DoB], [s].[FirstName], [s].[GradeId],[s].[LastName], 
+>         [s].[MiddleName], [s.Grade].[GradeId], [s.Grade].[GradeName], [s.Grade].[Section]
+> FROM [Students] AS [s]
+> LEFT JOIN [Grades] AS [s.Grade] ON [s].[GradeId] = [s.Grade].[GradeId]
+> WHERE [s].[FirstName] = N'Bill'
+> '''
+! The Include() extension method can also be used after the FromSql() method. 
+! The Include() extension method cannot be used after the DbSet.Find() method. 
+! Use the Include() method multiple times to load multiple navigation properties of the same entity.
+! EF Core introduced the new ThenInclude() extension method to load multiple levels of related entities.
+! We can also load multiple related entities by using the projection query instead of Include() or ThenInclude() methods.
+> projection Query Methods like Select() and SelectMany() can be used to load related entities by projecting the query results into a new form.
+*/
+
+//> 12. Insert Data in a Disconnected Scenario in Entity Framework Core
+/*
+Saving data in the disconnected scenario is a little bit different than in the connected scenario.
+In the disconnected scenario, the DbContext is not aware of disconnected entities because entities were added or modified out of the scope of the current DbContext instance.
+So, you need to attach the disconnected entities to a context with appropriate EntityState in order to perform CUD (Create, Update, Delete) operations to the database.
+
+disconnected entities (entities which are not being tracked by the DbContext) need to be attached to the DbContext with an appropriate EntityState.
+For example, Added state for new entities, Modified state for the edited entities and Deleted state for the deleted entities, which will result in an INSERT, UPDATE, or DELETE command
+in the database when the SaveChanges() method is called.
+The following steps must be performed in order to insert, update or delete records into the DB table using Entity Framework Core in a disconnected scenario:
+> 1. Attach an entity to DbContext with an appropriate EntityState e.g. Added, Modified, or Deleted
+> 2. Call SaveChanges() method
+
+in the disconnected scenario it could be an error the entity is'nt been tracked by the context.
+The following example demonstrates inserting a new record into the database using the above steps:
+*/
+//Disconnected entity
+var std = new Student(){ Name = "Bill" };
+
+using (var context = new SchoolContext())
+{
+    //1. Attach an entity to context with Added EntityState
+    context.Add<Student>(std);
+    
+    //or the following are also valid
+    // context.Students.Add(std);
+    // context.Entry<Student>(std).State = EntityState.Added;
+    // context.Attach<Student>(std);
+    //2. Calling SaveChanges to insert a new record into Students table
+    context.SaveChanges();
+}
+
+/*
+In the example above, std is a disconnected instance of the Student entity.
+> 1. The context.Add<Student>() method attaches a Student entity to a context with an Added state.
+> 2. The SaveChanges() method builds and executes the following INSERT statement:
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> INSERT INTO [Students] ([Name])
+> VALUES (@p0);
+> SELECT [StudentId]
+> FROM [Students]
+> WHERE @@ROWCOUNT = 1 AND [StudentId] = scope_identity();',N'@p0 nvarchar(4000), 
+> @p1 nvarchar(4000) ',@p0=N'Bill'
+> go
+> '''
+
+> EF Core provides multiple ways to add entities with Added state. In the above example, 
+1. context.Students.Add(std);
+2. context.Entry<Student>(std).State = EntityState.Added; 
+3. context.Attach<Student>(std); 
+! will result in the same INSERT statement as above.
+
+Entity Framework Core provides the following DbContext and DbSet methods which attach disconnected entities with Added EntityState, which in turn will execute
+INSERT statements in the database.
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ DbContext Method     ┃ DbSet Method             ┃ Description / State Behavior                                         ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Attach               ┃ Attach                   ┃ Key exists: Unchanged state. No Key: Added state.                    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Add                  ┃ Add                      ┃ Attaches entity with Added state.                                    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ AddRange             ┃ AddRange                 ┃ Attaches multiple entities with Added state.                         ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Entry                ┃ (N/A)                    ┃ Provides access to Change Tracking info and manual state control.    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ AddAsync             ┃ AddAsync                 ┃ Async add; starts tracking immediately.                              ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ AddRangeAsync        ┃ AddRangeAsync            ┃ Async add for multiple entities in one operation.                    ┃
+┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+! Both DbContext and DbSet methods perform the same operation. Which one you use depends on your coding pattern and preference.
+*/
+//> Insert Relational Data
+/*
+Use the DbContext.Add or DbSet.Add method to add related entities to the database. 
+The Add method attaches entities to a context and sets the Added state to all the entities in an entity graph whose Id (Key) properties are empty, null or the default value of data type.
+Consider the following example.
+*/
+
+var stdAddress = new StudentAddress()
+{
+    City = "SFO",
+    State = "CA",
+    Country = "USA"
+};
+
+var std = new Student()
+{
+    Name = "Steve",
+    Address = stdAddress
+};
+using (var context = new SchoolContext())
+{
+    // Attach an entity to DbContext with Added state
+    context.Add<Student>(std);
+
+    // Calling SaveChanges to insert a new record into Students table
+    context.SaveChanges();
+}
+
+/*
+In the example above, context.Add<Student>(std) adds an instance of Student entity.
+EF Core API reaches the StudentAddress instance through the reference navigation property of Student and marks EntityState of both the entities to Added, which will build and
+execute the following two INSERT commands on SaveChanges().
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> INSERT INTO [Students] ([Name])
+> VALUES (@p0);
+> SELECT [StudentId]
+> FROM [Students]
+> WHERE @@ROWCOUNT = 1 AND [StudentId] = scope_identity();',N'@p0 nvarchar(4000), 
+> @p1 nvarchar(4000) ',@p0=N'Steve'
+> go
+> 
+> exec sp_executesql N'SET NOCOUNT ON;
+> INSERT INTO [StudentAddresses] ([Address], [City], [Country], [State], [StudentId])
+> VALUES (@p5, @p6, @p7, @p8, @p9);
+> SELECT [StudentAddressId]
+> FROM [StudentAddresses]
+> WHERE @@ROWCOUNT = 1 AND [StudentAddressId] = scope_identity();
+> ',N'@p5 nvarchar(4000),@p6 nvarchar(4000),@p7 nvarchar(4000),@p8 nvarchar(4000),
+> @p9 int',@p5=NULL,@p6=N'SFO',@p7=N'USA',@p8=N'CA',@p9=1
+> Go
+> '''
+
+there is some additional topics related to inserting data in a disconnected scenario, such as:
+# 1. Insert Multiple Records
+# 2. Insert Data Using DbSet
+i don't want study them now, but i will study them later when i need them. 
+*/
+
+//> 13. Update Data in Disconnected Scenario in Entity Framework Core
+
+/*
+EF Core API builds and executes UPDATE statement in the database for the entities whose EntityState is Modified.
+In the connected scenario, the DbContext keeps track of all entities so it knows which are modified and hence automatically sets EntityState to Modified.
+
+In the disconnected scenario such as in a web application, the DbContext is not aware of the entities because entities were modified out of the scope of the current DbContext instance.
+So, first, we need to attach the disconnected entities to a DbContext instance with Modified EntityState.
+The following table lists the DbContext and DbSet methods to update entities:
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ DbContext Method     ┃ DbSet Method             ┃ Description / State Behavior                              ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Update               ┃ Update                   ┃ Attaches entity with Modified state. Triggers SQL UPDATE. ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ UpdateRange          ┃ UpdateRange              ┃ Attaches multiple entities with Modified state in one go. ┃
+┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+*/
+//> The following example demonstrates updating a disconnected entity.
+// Disconnected Student entity
+var stud = new Student(){ StudentId = 1, Name = "Bill" };
+
+stud.Name = "Steve"; 
+
+using (var context = new SchoolContext())
+{
+    context.Update<Student>(stud);
+    // or the following are also valid
+    // context.Students.Update(stud);
+    // context.Attach<Student>(stud).State = EntityState.Modified;
+    // context.Entry<Student>(stud).State = EntityState.Modified; 
+    context.SaveChanges(); 
+}
+/*
+In the above example, consider the stud is an existing Student entity object because it has a valid Key property value (StudentId = 1).
+Entity Framework Core introduced the DbContext.Update() method which attaches the specified entity to a context and sets its EntityState to Modified.
+Alternatively, you can also use the DbSet.Update() method (context.Students.Update(stud)) to do the same thing.
+The above example executes the following UPDATE statement in the database.
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> UPDATE [Students] SET [Name] = @p0
+> WHERE [StudentId] = @p1;
+> SELECT @@ROWCOUNT;
+> ',N'@p1 int,@p0 nvarchar(4000)',@p1=1,@p0=N'Steve'
+> go
+> '''
+
+The Update method sets the EntityState based on the value of the key property.
+If the root or child entity's key property is empty, null or default value of the specified data type then the Update() method considers it a new entity and sets 
+its EntityState to Added in Entity Framework Core 
+*/
+public static void Main()
+{
+    var newStudent = new Student()
+    {
+        Name = "Bill"
+    };
+
+    var modifiedStudent = new Student()
+    {
+        StudentId = 1,
+        Name = "Steve"
+    };
+
+    using (var context = new SchoolContext())
+    {
+        context.Update<Student>(newStudent);
+        context.Update<Student>(modifiedStudent);
+
+        DisplayStates(context.ChangeTracker.Entries());
+    }
+}
+private static void DisplayStates(IEnumerable<EntityEntry> entries)
+{
+    foreach (var entry in entries)
+    {
+        Console.WriteLine($"Entity: {entry.Entity.GetType().Name},
+                State: {entry.State.ToString()} ");
+    }
+}
+/*
+In the above example, newStudent does not have a Key property value (StudentId).
+So, the Update() method will mark it as Added, whereas modifiedStudent has a value, so it will be marked as Modified.
+
+*/
+//! Exception:
+// The Update and UpdateRange methods throw an InvalidOperationException if an instance of DbContext is already tracking an entity with the same key property value.
+// Consider the following example:
+var student = new Student()
+{
+    StudentId = 1,
+    Name = "Steve"
+};
+using (var context = new SchoolContext())
+{
+    // loads entity in a context whose StudentId is 1
+    context.Students.First<Student>(s => s.StudentId == 1); 
+    // throws an exception as it is already tracking entity with StudentId=1
+    context.Update<Student>(student); 
+    context.SaveChanges();
+}
+/*
+In the above example, a context object loads the Student entity whose StudentId is 1 and starts tracking it.
+So, attaching an entity with the same key value will throw the following exception:
+! The instance of entity type 'Student' cannot be tracked because another instance with the same key value for {'StudentId'} is already being tracked.
+! When attaching existing entities, ensure that only one entity instance with a given key value is attached. 
+! Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.
+*/
+
+//> 15. Delete Data in Disconnected Scenario in Entity Framework Core
+/*
+EF Core API builds and executes a DELETE statement in the database for the entities whose EntityState is Deleted.
+There is no difference in deleting an entity in a connected or a disconnected scenario in EF Core.
+EF Core made it easy to delete an entity from a context, which in turn will delete a record in the database using the following methods.
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ DbContext Method     ┃ DbSet Method             ┃ Description / State Behavior                              ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Remove               ┃ Remove                   ┃ Attaches entity with Deleted state. Triggers SQL DELETE.  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ RemoveRange          ┃ RemoveRange              ┃ Attaches multiple entities with Deleted state in one go.  ┃
+┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+*/
+//> The following example demonstrates the different ways of deleting an entity in the disconnected scenario.
+// entity to be deleted
+var student = new Student() {
+        StudentId = 1
+};
+
+using (var context = new SchoolContext()) 
+{
+    context.Remove<Student>(student);
+    // or the following are also valid
+    // context.RemoveRange(student);
+    //context.Students.Remove(student);
+    //context.Students.RemoveRange(student);
+    //context.Attach<Student>(student).State = EntityState.Deleted;
+    //context.Entry<Student>(student).State = EntityState.Deleted;
+    
+    context.SaveChanges();
+}
+/*
+In the above example, a Student entity with a valid StudentId is removed from a context using the Remove() or RemoveRange() method.
+The data will be deleted from the database on SaveChanges(). The above example executes the following delete command in the database:
+> '''
+> exec sp_executesql N'SET NOCOUNT ON;
+> DELETE FROM [Students]
+> WHERE [StudentId] = @p0;
+> SELECT @@ROWCOUNT;
+> ',N'@p0 int',@p0=1
+> go
+> '''
+Note: The DbContext.Remove() and DbContext.RemoveRange() methods are newly introduced in EF Core to make the delete operation easy.
+! if the entity to be deleted does not exist in the database, then the above code will not throw an exception. It will execute the DELETE statement and return 0 rows affected.
+> some additional topics related to deleting data in a disconnected scenario are:
+# 1. Delete Multiple Records
+# 2. Delete Data Using DbSet 
+*/
+
+//> 15. Conventions in Entity Framework Core
+/*
+Conventions are default rules using which Entity Framework builds a model based on your domain (entity) classes.
+In the First EF Core Application chapter, EF Core API creates a database schema based on domain and context classes, without any additional configurations because
+domain classes were following the conventions.
+*/
+//> Consider the following sample entities and context class to understand the default conventions.
+public class Student // dependant entity
+{
+    public int StudentId { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public byte[] Photo { get; set; }
+    public decimal Height { get; set; }
+    public float Weight { get; set; }
+
+    public int GradeId { get; set; } // foreign key property
+    public Grade Grade { get; set; } // reference navigation property
+}
+
+public class Grade // principal entity
+{
+    public int Id { get; set; } // primary key property
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+
+    public IList<Student> Students { get; set; }
+}
+
+public class SchoolContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    { 
+        optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=SchoolDB;Trusted_Connection=True;");
+    }
+
+    public DbSet<Student> Students { get; set; }
+}
+//> Let's understand the EF Core conventions and how EF Core API will create a database for the above entities.
+//> 15.1 Schema
+// EF Core will create all the database objects in the dbo schema by default.
+//> 15.2 Table
+/*
+# EF Core will create database tables for all DbSet<TEntity> properties in a context class with the same name as the property.
+# It will also create tables for entities which are not included as DbSet properties but are reachable through reference properties in other DbSet entities.
+# For the above example, EF Core will create the Students table for DbSet<Student> property in the SchoolContext class and the Grade table for a Grade property in the
+# Student entity class, even though the SchoolContext class does not include the DbSet<Grade> property.
+*/
+
+//> 15.3 Column
+/*
+EF Core will create columns for all the scalar properties of an entity class with the same name as the property, by default.
+It uses the reference and collection properties in building relationships among corresponding tables in the database.
+> Column Data Type
+The data type for columns in the database table is depending on how the provider for the database has mapped C# data type to the data type of a selected database.
+The following table lists mapping between C# data type to SQL Server column data type.
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ C# Type       ┃ SQL Server Type              ┃ Notes                                    ┃
+┣━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ int           ┃ int                          ┃ Standard 32-bit integer.                 ┃
+┃ string        ┃ nvarchar(Max)                ┃ Default. Use [MaxLength] to optimize.    ┃
+┃ decimal       ┃ decimal(18,2)                ┃ Precision can be customized.             ┃
+┃ float         ┃ real                         ┃ 7-digit precision.                       ┃
+┃ byte[]        ┃ varbinary(Max)               ┃ Binary data storage.                     ┃
+┃ DateTime      ┃ datetime                     ┃ Maps to datetime2 in modern EF versions. ┃
+┃ bool          ┃ bit                          ┃ 0 or 1 logic.                            ┃
+┃ byte          ┃ tinyint                      ┃ Unsigned 8-bit.                          ┃
+┃ short         ┃ smallint                     ┃ 16-bit signed.                           ┃
+┃ long          ┃ bigint                       ┃ 64-bit signed.                           ┃
+┃ double        ┃ float                        ┃ 15-digit precision.                      ┃
+┗━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> Nullable Column
+EF Core creates null columns for all reference data type and nullable primitive type properties e.g. string, Nullable<int>, decimal?.
+> NotNull Column
+EF Core creates NotNull columns in the database for all primary key properties, and primitive type properties e.g. int, float, decimal, DateTime etc..
+> Primary Key
+EF Core will create the primary key column for the property named Id or <Entity Class Name>Id (case insensitive).
+For example, EF Core will create a column as Primary Key in the Students table if the Student class includes a property named:
+id,
+1. ID
+2. iD
+3. Id
+4. studentid
+5. StudentId
+6. STUDENTID
+7. sTUdentID
+
+> Foreign Key
+As per the foreign key convention, EF Core API will create a foreign key column for each reference navigation property in an entity with one of the following naming patterns.
+> <Reference Navigation Property Name>Id
+> <Reference Navigation Property Name><Principal Primary Key Property Name>
+In our example (Student and Grade entities), EF Core will create a foreign key column GradeId in the Students table, as depicted in the following figure.
+The following table lists foreign key column names for different reference property names and primary key property names.
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+┃ Navigation Property  ┃ FK Property (C#)  ┃ Principal PK Name ┃ Resulting DB Column ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━┫
+┃ Grade                ┃ GradeId           ┃ GradeId           ┃ GradeId             ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━┫
+┃ Grade                ┃ GradeId           ┃ Id                ┃ GradeId             ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━┫
+┃ CurrentGrade         ┃ CurrentGradeId    ┃ GradeId           ┃ CurrentGradeId      ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━┫
+┃ CurrentGrade         ┃ CurrentGradeId    ┃ Id                ┃ CurrentGradeId      ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━┫
+┃ CurrentGrade         ┃ GradeId           ┃ Id                ┃ GradeId             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━┛
+> Index
+EF Core creates a clustered index on the Primary Key columns and a non-clustered index on the Foreign Key columns, by default.
+*/
+
+//> 16. One-to-Many Relationship Conventions in Entity Framework Core
+/*
+Entity Framework Core follows the same convention as Entity Framework 6.x conventions for one-to-many relationship.
+The only difference is that EF Core creates a foreign key column with the same name as navigation property name and not as <NavigationPropertyName>_<PrimaryKeyPropertyName>
+*/
+//> Let's look at the different conventions which automatically configure a one-to-many relationship between the following Student and Grade entities.
+public class Student
+{
+    public int StudentId { get; set; }
+    public string StudentName { get; set; }
+}
+public class Grade
+{
+    public int GradeId { get; set; }
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+}
+
+//> Convention 1
+/*
+We want to establish a one-to-many relationship where many students are associated with one grade.
+This can be achieved by including a reference navigation property in the dependent entity as shown below.
+(here, the Student entity is the dependent entity and the Grade entity is the principal entity).
+*/
+public class Student // dependant entity
+{
+    public int Id { get; set; } // primary key property
+    public string Name { get; set; }
+    public Grade Grade { get; set; } // reference navigation property
+}
+
+public class Grade // principal entity
+{
+    public int GradeId { get; set; } // primary key property
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+}
+
+/*
+In the example above, the Student entity class includes a reference navigation property of Grade type.
+This allows us to link the same Grade to many different Student entities, which creates a one-to-many relation en them.
+This will produce a one-to-many relationship between the Students and Grades tables in the database, where Students table includes a nullable foreign key GradeId, as shown below.
+EF Core will create a shadow property for the foreign key named GradeId in the conceptual model, which will be mapped to the GradeId foreign key column in the Students table.
+!!! important note 
+! Note: The reference property Grade is nullable, so it creates a nullable ForeignKey GradeId in the Students table. You can configure non null foreign keys using fluent API.
+*/
+
+
+//> Convention 2
+//> Another convention is to include a collection navigation property in the principal entity as shown below.
+public class Student
+{
+    public int StudentId { get; set; }
+    public string StudentName { get; set; }
+}
+public class Grade
+{
+    public int GradeId { get; set; }
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+    public ICollection<Student> Students { get; set; } 
+}
+/*
+In the example above, the Grade entity includes a collection navigation property of type ICollection<Student>.
+This will allow us to add multiple Student entities to a Grade entity, which results in a one-to-many relationship between the Students and Grades tables in the database,
+just like in convention 1.
+*/
+
+//> Convention 3
+//> Another EF convention for the one-to-many relationship is to include navigation property at both ends, which will also result in a one-to-many relationship (convention 1 + convention 2).
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    
+    public Grade Grade { get; set; }
+}
+
+public class Grade
+{
+    public int GradeID { get; set; }
+    public string GradeName { get; set; }
+    
+    public ICollection<Student> Students { get; set; }
+}
+
+/*
+In the example above, the Student entity includes a reference navigation property of Grade type and the Grade entity class includes a collection navigation property 
+ICollection<Student>, which results in a one-to-many relationship between corresponding database tables Students and Grades, same as in convention 1.
+*/
+
+
+//> Convention 4
+//> Defining the relationship fully at both ends with the foreign key property in the dependent entity creates a one-to-many relationships.
+
+public class Student // dependant entity
+{ 
+    public int Id { get; set; } // primary key property
+    public string Name { get; set; }
+    public int GradeId { get; set; } // foreign key property
+    public Grade Grade { get; set; } // reference navigation property
+}
+public class Grade // principal entity
+{
+    public int GradeId { get; set; } // primary key property
+    public string GradeName { get; set; }
+    public ICollection<Student> Students { get; set; } // collection navigation property
+}
+
+/*
+In the above example, the Student entity includes a foreign key property GradeId of type int and its reference navigation property Grade.
+At the other end, the Grade entity also includes a collection navigation property ICollection<Student>.
+This will create a one-to-many relationship with the non null foreign key column in the Students table.
+*/
+//!!!! thats an important note about the foreign key property GradeId in the above example. It is of type int, which is a non-nullable value type in C#. 
+//!!!! If you want to make the foreign key GradeId as nullable, then use nullable int data type (Nullable<int> or int?), as shown below.
+
+/*
+Therefore, these are the conventions which automatically create a one-to-many relationships in the corresponding database tables. 
+If entities do not follow the above conventions, then you can use Fluent API to configure the one-to-many relationships.
+*/
+//> 17. One-to-One Relationship Conventions in Entity Framework Core
+//> Entity Framework Core introduced default conventions which automatically configure a One-to-One relationship between two entities
+
+//> In EF Core, a one-to-one relationship requires a reference navigation property at both sides.
+//> The following Student and StudentAddress entities follow the convention for the one-to-one relationship.
+
+
+public class Student // principal entity
+{
+    public int Id { get; set; } // primary key property
+    public string Name { get; set; }
+    public int StudentAddressId { get; set; } // foreign key property
+    public StudentAddress Address { get; set; } // reference navigation property
+}
+
+public class StudentAddress // principal entity
+{
+    public int StudentAddressId { get; set; }
+    public string Address { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string Country { get; set; }
+    public int StudentId { get; set; } // foreign key property
+    public Student Student { get; set; } // reference navigation property
+}
+/*
+In the example above, the Student entity includes a reference navigation property of type StudentAddress and the StudentAddress entity includes a 
+foreign key property StudentId and its corresponding reference property Student.
+This will result in a one-to-one relationship in corresponding tables Students and StudentAddresses in the database.
+EF Core creates a unique index on the NotNull foreign key column StudentId in the StudentAddresses table, as shown above.
+This ensures that the value of the foreign key column StudentId must be unique in the StudentAddress table, which is necessary for a one-to-one relationship.
+*/
+//! ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+//! ┃ Use Fluent API to configure one-to-one relationships if entities do not follow the conventions. ┃
+//! ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+//> 18. Configurations in Entity Framework Core
+/*
+You learned about default Conventions in EF Core in the previous chapter. Many times we want to customize the entity to table mapping and do not want to follow default conventions.
+EF Core allows us to configure domain classes in order to customize the EF model to database mappings.
+This programming pattern is referred to as Convention over Configuration.
+There are two ways to configure domain classes in EF Core.
+> 1. By using Data Annotation Attributes
+> 2. By using Fluent API
+*/
+
+//> Data Annotation Attributes
+/*
+Data Annotations are a simple attribute-based configuration method where different .NET attributes can be applied to domain classes and properties to configure the model.
+Data annotation attributes are not dedicated to Entity Framework, as they are also used in ASP.NET MVC. This is why these attributes are included in a separate namespace
+!! System.ComponentModel.DataAnnotations.
+*/
+//> The following example demonstrates how the data annotation attributes can be applied to a domain class and properties to override conventions.
+[Table("StudentInfo")]
+public class Student
+{
+    public Student() { }
+    [Key]
+    public int SID { get; set; }
+    [Column("Name", TypeName="ntext")]
+    [MaxLength(20)]
+    public string StudentName { get; set; }
+    [NotMapped]
+    public int? Age { get; set; }
+    public int StdId { get; set; }
+    [ForeignKey("StdId")]
+    public virtual Standard Standard { get; set; }
+}
+//> Data annotation attributes
+/*
+! Data Annotation attributes are .NET attributes which can be applied on an entity class or properties to override default conventions in EF 6 and EF Core.
+Data Annotation attributes are included in the System.ComponentModel.DataAnnotations and System.ComponentModel.DataAnnotations.Schema namespaces in EF 6 as well as in EF Core.
+These attributes are not only used in Entity Framework but they can also be used with ASP.NET MVC or data controls.
+These data annotation attributes work in the same way in EF 6 and EF Core and are valid in both.
+# Note: Data annotations only give you a subset of configuration options.
+# Fluent API provides a full set of configuration options available in Code-First.
+> System.ComponentModel.DataAnnotations Attributes
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Attribute           ┃ Description / Database Impact                        ┃
+┣━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ [Key]               ┃ Defines the Primary Key column.                      ┃
+┃ [Timestamp]         ┃ Defines a row version column for tracking changes.   ┃
+┃ [ConcurrencyCheck]  ┃ Includes column in optimistic concurrency checks.    ┃
+┃ [Required]          ┃ Sets the database column to NOT NULL.                ┃
+┃ [MinLength]         ┃ Validates minimum string length (Application level). ┃
+┃ [MaxLength]         ┃ Sets maximum column size (Database level).           ┃
+┃ [StringLength]      ┃ Sets maximum (and optionally minimum) string length. ┃
+┗━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+> System.ComponentModel.DataAnnotations.Schema Attributes
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Attribute            ┃ Description / Database Impact                                   ┃
+┣━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ [Table]              ┃ Sets custom Table Name and Schema.                              ┃
+┃ [Column]             ┃ Sets custom Column Name, Order, and Data Type.                  ┃
+┃ [Index]              ┃ Creates a database index on the property.                       ┃
+┃ [ForeignKey]         ┃ Manually specifies the FK property for a relationship.          ┃
+┃ [NotMapped]          ┃ Prevents the property from being created as a column in the DB. ┃
+┃ [DatabaseGenerated]  ┃ Configures Identity, Computed, or None for value generation.    ┃
+┃ [InverseProperty]    ┃ Links two ends of a relationship when naming is ambiguous.      ┃
+┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+/*
+! the important thing to know now is the fluent API:
+> Fluent API
+Another way to configure domain classes is by using Entity Framework Fluent API.
+EF Fluent API is based on a Fluent API design pattern (a.k.a Fluent Interface) where the result is formulated by method chaining.
+
+! In Entity Framework Core, the ModelBuilder class acts as a Fluent API. 
+> By using it, we can configure many different things, as it provides more configuration options than data annotation attributes.
+Entity Framework Core Fluent API configures the following aspects of a model:
+> 1. Model Configuration: 
+    • Configures an EF model to database mappings.
+    • Configures the default Schema, DB functions, additional data annotation attributes and entities to be excluded from mapping.
+> 2. Entity Configuration:
+    • Configures entity to table and relationships mapping e.g. PrimaryKey, AlternateKey, Index, table name, one-to-one, one-to-many, many-to-many relationships etc.
+> 3. Property Configuration: 
+Configures property to column mapping e.g. column name, default value, nullability, foreign key, data type, concurrency column etc.
+The following table lists important methods for each type of configuration.
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Configurations ┃ Fluent API Method            ┃ Usage / Description                                                                                                                                                     ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Model (Global) ┃ HasDbFunction()              ┃ Configures a database function when targeting a relational database.                                                                                                    ┃  
+┃                ┃ HasDefaultSchema()           ┃ Specifies the database schema.                                                                                                                                          ┃  
+┃                ┃ HasAnnotation()              ┃ Adds or updates data annotation attributes on the entity.                                                                                                               ┃  
+┃                ┃ HasSequence()                ┃ Configures a database sequence when targeting a relational database.                                                                                                    ┃  
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Entity (Table) ┃ HasAlternateKey()            ┃ Configures an alternate key in the EF model for the entity.                                                                                                             ┃
+┃                ┃ HasIndex()                   ┃ Configures an index on the specified properties.                                                                                                                        ┃  
+┃                ┃ HasKey()                     ┃ Configures the property or list of properties as Primary Key.                                                                                                           ┃
+┃                ┃ HasMany()                    ┃ Configures the Many part of the relationship, where an entity contains the reference collection property of another type for one-to-Many or many-to-many relationships. ┃
+┃                ┃ HasOne()                     ┃ Configures the One part of the relationship, where an entity contains the reference property of another type for one-to-one or one-to-many relationships.               ┃
+┃                ┃ Ignore()                     ┃ Configures that the class or property should not be mapped to a table or column.                                                                                        ┃
+┃                ┃ OwnsOne()                    ┃ Configures a relationship where the target entity is owned by this entity. The target entity key value is propagated from the entity it belongs to.                     ┃
+┃                ┃ ToTable()                    ┃ Configures the database table that the entity maps to.                                                                                                                  ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Property       ┃ HasColumnName()              ┃ Configures the corresponding column name in the database for the property.                                                                                              ┃
+┃ (Column)       ┃ HasColumnType()              ┃ Configures the data type of the corresponding column in the database for the property.                                                                                  ┃
+┃                ┃ HasComputedColumnSql()       ┃ Configures the property to map to a computed column in the database when targeting a relational database.                                                               ┃          
+┃                ┃ HasDefaultValue()            ┃ Configures the default value for the column that the property maps to when targeting a relational database..                                                            ┃          
+┃                ┃ HasDefaultValueSql()         ┃ Configures the default value expression for the column that the property maps to when targeting relational database.                                                    ┃                  
+┃                ┃ HasField()                   ┃ Specifies the backing field to be used with a property.                                                                                                                 ┃
+┃                ┃ HasMaxLength()               ┃ Configures the maximum length of data that can be stored in a property.                                                                                                 ┃
+┃                ┃ IsConcurrencyToken()         ┃ Configures the property to be used as an optimistic concurrency token.                                                                                                  ┃
+┃                ┃ IsRequired()                 ┃ Configures whether the valid value of the property is required or whether null is a valid value.                                                                        ┃      
+┃                ┃ IsRowVersion()               ┃ Configures the property to be used in optimistic concurrency detection.                                                                                                 ┃
+┃                ┃ IsUnicode()                  ┃ Configures the string property which can contain Unicode characters or not.                                                                                             ┃
+┃                ┃ ValueGeneratedNever()        ┃ Configures a property which cannot have a generated value when an entity is saved.                                                                                      ┃
+┃                ┃ ValueGeneratedOnAdd()        ┃ Configures that the property has a generated value when saving a new entity.                                                                                            ┃
+┃                ┃ ValueGeneratedOnAddOrUpdate()┃ Configures that the property has a generated value when saving a new or existing entity.                                                                                ┃
+┃                ┃ ValueGeneratedOnUpdate()     ┃ Configures that a property has a generated value when saving an existing entity.                                                                                        ┃
+┗━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+>simpler version of the above table:
+┏━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Configurations ┃ Fluent API Method            ┃ Usage / Description                                                ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Model (Global) ┃ HasDbFunction()              ┃ Configures a database function when targeting a relational db.     ┃
+┃                ┃ HasDefaultSchema()           ┃ Specifies the database schema.                                     ┃
+┃                ┃ HasAnnotation()              ┃ Adds or updates data annotation attributes on the entity.          ┃
+┃                ┃ HasSequence()                ┃ Configures a database sequence when targeting a relational db.     ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Entity (Table) ┃ HasAlternateKey()            ┃ Configures an alternate key in the EF model for the entity.        ┃
+┃                ┃ HasIndex()                   ┃ Configures an index on the specified properties.                   ┃
+┃                ┃ HasKey()                     ┃ Configures the property or list of properties as Primary Key.      ┃
+┃                ┃ HasMany()                    ┃ Configures the Many part of the relationship (1:N or N:N).         ┃
+┃                ┃ HasOne()                     ┃ Configures the One part of the relationship (1:1 or 1:N).          ┃
+┃                ┃ Ignore()                     ┃ Configures that the class or property should not be mapped.        ┃
+┃                ┃ OwnsOne()                    ┃ Configures a relationship where the target entity is owned.        ┃
+┃                ┃ ToTable()                    ┃ Configures the database table that the entity maps to.             ┃
+┣━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Property       ┃ HasColumnName()              ┃ Configures the corresponding column name in the database.          ┃
+┃ (Column)       ┃ HasColumnType()              ┃ Configures the data type of the corresponding column.              ┃
+┃                ┃ HasComputedColumnSql()       ┃ Configures the property to map to a computed column.               ┃
+┃                ┃ HasDefaultValue()            ┃ Configures the default value for the column.                       ┃
+┃                ┃ HasDefaultValueSql()         ┃ Configures the default value expression (SQL) for the column.      ┃
+┃                ┃ HasField()                   ┃ Specifies the backing field to be used with a property.            ┃
+┃                ┃ HasMaxLength()               ┃ Configures the maximum length of data stored in a property.        ┃
+┃                ┃ IsConcurrencyToken()         ┃ Configures the property as an optimistic concurrency token.        ┃
+┃                ┃ IsRequired()                 ┃ Configures whether the value is required (NotNull).                ┃
+┃                ┃ IsRowVersion()               ┃ Configures property for optimistic concurrency detection.          ┃
+┃                ┃ IsUnicode()                  ┃ Configures if the string property can contain Unicode.             ┃
+┃                ┃ ValueGeneratedNever()        ┃ Configures a property which cannot have a generated value.         ┃
+┃                ┃ ValueGeneratedOnAdd()        ┃ Generated value when saving a new entity.                          ┃
+┃                ┃ ValueGeneratedOnAddOrUpdate()┃ Generated value when saving a new or existing entity.              ┃
+┃                ┃ ValueGeneratedOnUpdate()     ┃ Generated value when saving an existing entity.                    ┃
+┗━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+*/
+//> Fluent API Configurations
+//> Override the OnModelCreating method and use a parameter modelBuilder of type ModelBuilder to configure domain classes, as shown below.
+public class SchoolDBContext: DbContext 
+{
+    public DbSet<Student> Students { get; set; }
+        
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        //Write Fluent API configurations here
+
+        //Property Configurations
+        modelBuilder.Entity<Student>()
+                .Property(s => s.StudentId) // specify the property to be configured
+                .HasColumnName("Id") // configure the column name in the database for the property
+                .HasDefaultValue(0) // configure the default value for the column that the property maps to when targeting a relational database
+                .IsRequired(); // configure whether the valid value of the property is required or whether null is a valid value
+    }
+}
+
+/*
+> In the above example, the ModelBuilder Fluent API instance is used to configure a property by calling multiple methods in a chain.
+> It configures the StudentId property of the Student entity;
+> it configures the name using HasColumnName, the default value using HasDefaultValue and nullability using IsRequired method in a single statement instead of multiple statements.
+> This increases the readability and also takes less time to write compared to multiple statements, as shown below.
+*/
+//Fluent API method chained calls
+modelBuilder.Entity<Student>()
+        .Property(s => s.StudentId)
+        .HasColumnName("Id")
+        .HasDefaultValue(0)
+        .IsRequired();
+
+//Separate method calls
+modelBuilder.Entity<Student>().Property(s => s.StudentId).HasColumnName("Id");
+modelBuilder.Entity<Student>().Property(s => s.StudentId).HasDefaultValue(0);
+modelBuilder.Entity<Student>().Property(s => s.StudentId).IsRequired();
+
+//! Note: Fluent API configurations have higher precedence than data annotation attributes.
+
+//> 19. Configure One-to-Many Relationships using Fluent API in Entity Framework Core
+/*
+You learned about the Conventions for One-to-Many Relationship.
+Generally, you don't need to configure one-to-many relationships because EF Core includes enough conventions which will automatically configure them.
+However, you can use Fluent API to configure the one-to-many relationship if you decide to have all the EF configurations in Fluent API for easy maintenance.
+Entity Framework Core made it easy to configure relationships using Fluent API.
+*/
+
+//> Consider the following Student and Grade classes where the Grade entity includes many Student entities.
+
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public int CurrentGradeId { get; set; }
+    public Grade Grade { get; set; }
+}
+
+public class Grade
+{
+    public int GradeId { get; set; }
+    public string GradeName { get; set; }
+    public string Section { get; set; }
+    public ICollection<Student> Students { get; set; }
+}
+//> Configure the one-to-many relationship for the above entities using Fluent API by overriding the OnModelCreating method in the context class
+
+public class SchoolContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=EFCore-SchoolDB;Trusted_Connection=True");
+    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Student>()
+            .HasOne<Grade>(s => s.Grade)
+            .WithMany(g => g.Students)
+            .HasForeignKey(s => s.CurrentGradeId);
+    }
+    public DbSet<Grade> Grades { get; set; }
+    public DbSet<Student> Students { get; set; }
+}
+
+//>  In the example above, the following code snippet configures the one-to-many relationship:
+modelBuilder.Entity<Student>() // specify the entity to be configured
+    .HasOne<Grade>(s => s.Grade) // configure the reference navigation property of the dependent entity (Student) which points to the principal entity (Grade)
+    .WithMany(g => g.Students) // configure the collection navigation property of the principal entity (Grade) which points to the dependent entity (Student)
+    .HasForeignKey(s => s.CurrentGradeId); // configure the foreign key property in the dependent entity (Student) which will be used for the relationship
+//> Now, to reflect this in the database, execute migration commands, add-migration <name> and update-database.
+//> The database will include two tables with One-to-Many relationship as shown below.
+
+/*
+# Let's understand the above code step by step.
+1. we need to start configuring with one entity class, either Student or Grade. So, modelBuilder.Entity<Student>() starts with the Student entity.
+2. Then .HasOne<Grade>(s => s.Grade) specifies that the Student entity includes a Grade type property named Grade.
+3. Now, we need to configure the other end of the relationship, the Grade entity. 
+    The .WithMany(g => g.Students) specifies that the Grade entity class includes many Student entities. Here, WithMany infers collection navigation property.
+4. The .HasForeignKey<int>(s => s.CurrentGradeId); specifies the name of the foreign key property CurrentGradeId. 
+    This is optional. Use it only when you have the foreign key Id property in the dependent class.
+
+> lets draw the illustration of the above code snippet to understand it better. 
+
+   ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+   ┃                            ┃
+   ┃     modelBuilder.Entity<Student>()
+   ┃         .HasOne<Grade>(s => s.Grade) ━━━━━━━━━━━━━━━━━┓
+   ┃         .WithMany(g => g.Students) ━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━┓                             
+   ┃         .HasForeignKey(s => s.CurrentGradeId); ━━━━━┓ ┃              ┃    
+   ┃                                                     ┃ ┃              ┃
+   ┗━━━━━━━━━━━━┓                                        ┃ ┃              ┃     
+                ┃                                        ┃ ┃              ┃ 
+                ┃                                        ┃ ┃              ┃     
+                ▼                                        ┃ ┃              ┃ 
+public class Student                                     ┃ ┃              ┃ 
+{                                                        ┃ ┃              ┃ 
+    public int Id { get; set; }                          ┃ ┃              ┃         
+    public string Name { get; set; }                     ┃ ┃              ┃
+    public int CurrentGradeId { get; set; } <━━━━━━━━━━━━┛ ┃              ┃                                    
+    public Grade Grade { get; set; } <━━━━━━━━━━━━━━━━━━━━━┛              ┃
+}                                                                         ┃
+public class Grade                                                        ┃
+{                                                                         ┃
+    public int GradeId { get; set; }                                      ┃
+    public string GradeName { get; set; }                                 ┃
+    public string Section { get; set; }                                   ┃
+    public ICollection<Student> Students { get; set; } <━━━━━━━━━━━━━━━━━━┛
+}
+
+Alternatively, you can start configuring the relationship with the Grade entity instead of the Student entity, as shown below.
+modelBuilder.Entity<Grade>()
+    .HasMany<Student>(g => g.Students)
+    .WithOne(s => s.Grade)
+    .HasForeignKey(s => s.CurrentGradeId);
+
+! very important note about method chaining in Fluent API:
+
+# in simple words the method chaining will work on the name it self for example here:
+> 1-  modelBuilder.Entity<Grade>() - starts with the Grade entity
+> 2- .HasMany<Student>(g => g.Students) - we are in the Grade entity and we are saying that the Grade entity has many Student entities
+> 3- .WithOne(s => s.Grade) - now we are in the Student entity and we are saying that the Student entity has one Grade entity
+> 4- .HasForeignKey(s => s.CurrentGradeId); - we are still in the Student entity and we are saying that the foreign key property in the Student entity is CurrentGradeId.
+*/
+
+//> Configure Cascade Delete using Fluent API
+/*
+Cascade delete automatically deletes the child row when the related parent row is deleted.
+For example, if a Grade is deleted, then all the Students in that grade should also be deleted from the database automatically.
+Use the OnDelete method to configure the cascade delete between Student and Grade entities, as shown below.
+*/
+modelBuilder.Entity<Grade>()
+    .HasMany<Student>(g => g.Students)
+    .WithOne(s => s.Grade)
+    .HasForeignKey(s => s.CurrentGradeId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+/*
+The OnDelete() method cascade delete behavior uses the DeleteBehavior parameter. You can specify any of the following DeleteBehavior values, based on your requirement.
+> 1. Cascade : Dependent entities will be deleted when the principal entity is deleted.
+> 2. ClientSetNull: The values of foreign key properties in the dependent entities will be set to null.
+> 3. Restrict: Prevents Cascade delete.
+> 4. SetNull: The values of foreign key properties in the dependent entities will be set to null.
+*/
+
+
+//> 20. Configure One-to-One Relationships using Fluent API in Entity Framework Core
+/*
+Here you will learn how to configure one-to-one relationships between two entities using Fluent API, if they do not follow EF Core conventions.
+Generally, you don't need to configure one-to-one relationships manually because EF Core includes Conventions for One-to-One Relationships.
+However, if the key or foreign key properties do not follow the convention, then you can use data annotation attributes or Fluent API to configure a one-to-one 
+relationship between the two entities.
+Let's configure a one-to-one relationship between the following Student and StudentAddress entities, which do not follow the foreign key convention.
+*/
+
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public StudentAddress Address { get; set; }
+}
+public class StudentAddress
+{
+    public int StudentAddressId { get; set; }
+    public string Address { get; set; }
+    public string City { get; set; }
+    public string State { get; set; }
+    public string Country { get; set; }
+    public int AddressOfStudentId { get; set; }
+    public Student Student { get; set; }
+}
+
+//! To configure a one-to-one relationship using Fluent API in EF Core, use the HasOne, WithOne and HasForeignKey methods, as shown below.
+public class SchoolContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=EFCore-SchoolDB;Trusted_Connection=True");
+    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Student>()
+            .HasOne<StudentAddress>(s => s.Address)
+            .WithOne(ad => ad.Student)
+            .HasForeignKey<StudentAddress>(ad => ad.AddressOfStudentId);
+    }
+    public DbSet<Student> Students { get; set; }
+    public DbSet<StudentAddress> StudentAddresses { get; set; }
+}
+/*
+In the above example, the following code snippet configures the one-to-one relationship.
+
+modelBuilder.Entity<Student>()
+    .HasOne<StudentAddress>(s => s.Address)
+    .WithOne(ad => ad.Student)
+    .HasForeignKey<StudentAddress>(ad => ad.AddressOfStudentId);
+
+> Let's understand it step by step.
+1. modelBuilder.Entity<Student>() starts configuring the Student entity.
+2. The .HasOne<StudentAddress>(s => s.Address) method specifies that the Student entity includes one StudentAddress reference property using a lambda expression.
+3. .WithOne(ad => ad.Student) configures the other end of the relationship, the StudentAddress entity.
+    It specifies that the StudentAddress entity includes a reference navigation property of Student type.
+4. .HasForeignKey<StudentAddress>(ad => ad.AddressOfStudentId) specifies the foreign key property name.
+Now, to reflect this in the database, execute migration commands, add-migration <name> and update-database. 
+The database will include two tables with one-to-one relationship as shown below.
+
+The following figure illustrates the Fluent API configuration for a one-to-one relationship.
+
+   ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+   ┃                            ┃
+   ┃     modelBuilder.Entity<Student>()
+   ┃         .HasOne<StudentAddress>(s => s.Address) ━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+   ┃         .WithOne(ad => ad.Student) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━┓                             
+   ┃         .HasForeignKey<StudentAddress>(ad => ad.AddressOfStudentId); ━━━━┓ ┃  ┃    
+   ┃                                                                          ┃ ┃  ┃
+   ┗━━━━━━━━━━━━┓                                                             ┃ ┃  ┃     
+                ┃                                                             ┃ ┃  ┃ 
+                ┃                                                             ┃ ┃  ┃     
+                ▼                                                             ┃ ┃  ┃ 
+public class Student                                                          ┃ ┃  ┃ 
+{                                                                             ┃ ┃  ┃ 
+    public int Id { get; set; }                                               ┃ ┃  ┃         
+    public string Name { get; set; }                                          ┃ ┃  ┃       
+    public StudentAddress Address { get; set; } <━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━┛  ┃
+}                                                                             ┃    ┃
+public class StudentAddress                                                   ┃    ┃
+{                                                                             ┃    ┃
+    public int StudentAddressId { get; set; }                                 ┃    ┃ 
+    public string Address { get; set; }                                       ┃    ┃     
+    public string City { get; set; }                                          ┃    ┃ 
+    public string State { get; set; }                                         ┃    ┃ 
+    public string Country { get; set; }                                       ┃    ┃     
+    public int AddressOfStudentId { get; set; } <━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛    ┃             
+    public Student Student { get; set; } <━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+}
+You can start configuring with the StudentAddress entity in the same way, as below.
+modelBuilder.Entity<StudentAddress>()
+    .HasOne<Student>(ad => ad.Student)
+    .WithOne(s => s.Address)
+    .HasForeignKey<StudentAddress>(ad => ad.AddressOfStudentId);
+//! Thus, you can configure a one-to-one relationship in Entity Framework Core.
+*/
+//> 21. Configure Many-to-Many Relationships in Entity Framework Core
+/*
+Here you will learn how to configure many-to-many relationships between two entities using Fluent API in Entity Framework Core.
+Let's implement a many-to-many relationship between the following Student and Course entities, where one student can enroll for many courses and, 
+in the same way, one course can be joined by many students.
+*/
+
+public class Student
+{
+    public int StudentId { get; set; }
+    public string Name { get; set; }
+}
+
+public class Course
+{
+    public int CourseId { get; set; }
+    public string CourseName { get; set; }
+    public string Description { get; set; }
+}
+/*
+The many-to-many relationship in the database is represented by a joining table which includes the foreign keys of both tables. Also, these foreign keys are composite primary keys.
+! Convention
+There are no default conventions available in Entity Framework Core which automatically configure a many-to-many relationship. You must configure it using Fluent API.
+> Fluent API
+In the Entity Framework 6.x or earlier, EF API used to create the joining table for many-to-many relationships. We do not need to create a joining entity for a joining table (however, we can of course create a joining entity explicitly in EF 6).
+
+In Entity Framework Core, this has not been implemented yet. We must create a joining entity class for a joining table.
+The joining entity for the above Student and Course entities should include a foreign key property and a reference navigation property for each entity.
+> The steps for configuring many-to-many relationships would be the following:
+1. Define a new joining entity class which includes the foreign key property and the reference navigation property for each entity.
+2. Define a one-to-many relationship between the other two entities and the joining entity, by including a collection navigation property in entities
+    at both sides (Student and Course, in this case).
+3. Configure both the foreign keys in the joining entity as a composite key using Fluent API.
+*/
+//> So, first of all, define the joining entity StudentCourse, as shown below.
+
+public class StudentCourse
+{
+    public int StudentId { get; set; } //> foreign key property for Student entity
+    public Student Student { get; set; } //> reference navigation property for Student entity
+    public int CourseId { get; set; } //# foreign key property for Course entity
+    public Course Course { get; set; } //# reference navigation property for Course entity
+}
+
+/*
+The above joining entity StudentCourse includes reference navigation properties Student and Course and their foreign key properties StudentId and CourseId respectively
+(foreign key properties follow the convention).
+
+Now, we also need to configure two separate one-to-many relationships between 
+1. Student -> StudentCourse 
+2. Course -> StudentCourse 
+We can do it by just following the convention for one-to-many relationships, as shown below.
+*/
+public class Student
+{
+    public int StudentId { get; set; }
+    public string Name { get; set; }
+    public IList<StudentCourse> StudentCourses { get; set; }
+}
+
+public class Course
+{
+    public int CourseId { get; set; }
+    public string CourseName { get; set; }
+    public string Description { get; set; }
+    public IList<StudentCourse> StudentCourses { get; set; }
+}
+
+/*
+As you can see above, the Student and Course entities now include a collection navigation property of StudentCourse type. 
+The StudentCourse entity already includes the foreign key property and navigation property for both, Student and Course.
+This makes it a fully defined one-to-many relationship between Student & StudentCourse and Course & StudentCourse.
+Now, the foreign keys must be the composite primary key in the joining table. This can only be configured using Fluent API, as below.
+*/
+
+public class SchoolContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=EFCore-SchoolDB;Trusted_Connection=True");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<StudentCourse>().HasKey(sc => new { sc.StudentId, sc.CourseId });
+    }
+    
+    public DbSet<Student> Students { get; set; }
+    public DbSet<Course> Courses { get; set; }
+    public DbSet<StudentCourse> StudentCourses { get; set; }
+}
+/*
+In the above code, modelBuilder.Entity<StudentCourse>().HasKey(sc => new { sc.StudentId, sc.CourseId }) configures StudentId and CourseId as the composite key.
+This is how you can configure many-to-many relationships if entities follow the conventions for one-to-many relationships with the joining entity.
+Suppose that the foreign key property names do not follow the convention (e.g. SID instead of StudentId and CID instead of CourseId), then you can configure it using Fluent API,
+as shown below.
+*/
+modelBuilder.Entity<StudentCourse>().HasKey(sc => new { sc.SId, sc.CId });
+
+modelBuilder.Entity<StudentCourse>()
+    .HasOne<Student>(sc => sc.Student)
+    .WithMany(s => s.StudentCourses)
+    .HasForeignKey(sc => sc.SId);
+
+
+modelBuilder.Entity<StudentCourse>()
+    .HasOne<Course>(sc => sc.Course)
+    .WithMany(s => s.StudentCourses)
+    .HasForeignKey(sc => sc.CId);
+//> Note: EF team will include a feature where we don't need to create a joining entity for many-to-many relationships in the future.
+
+//> 22. Shadow Property in Entity Framework Core 
+/*
+Shadow properties are the properties that are not defined in your .NET entity class directly;
+instead, you configure them for the particular entity type in the entity data model. They can be configured in the OnModelCreating() method of the context class.
+
+shadow properties are not part of your entity class. So, you cannot access them as you access other properties of an entity.
+Shadow properties can only be configured for an entity type while building an Entity Data Model and they are also mapped to a database column.
+The value and state of the shadow properties are maintained purely in the Change Tracker.
+
+Let's understand the practical aspect of the shadow property.
+Assume that we need to maintain the created and updated date of each record in the database table.
+You learned how to set created and modified date of entities in EF Core by defining CreatedDate and UpdatedDate properties in entity classes.
+Here, we will see how to achieve the same result by using shadow properties without including them in entity classes.
+*/
+
+//> Consider the following Student entity class.
+public class Student
+{
+    public int StudentID { get; set; }
+    public string StudentName { get; set; }
+    public DateTime? DateOfBirth { get; set; }
+    public decimal Height { get; set; }
+    public float Weight { get; set; }
+}
+/*
+> The above Student class does not include CreatedDate and UpdatedDate properties to maintain created or updated time.
+> We will configure them as shadow properties on the Student entity.
+> Defining Shadow Property
+You can define the shadow properties for an entity type using the Fluent API in the OnModelCreating() using the Property() method.
+The following configures two shadow properties CreatedDate and UpdatedDate on the Student entity.
+*/
+
+public class SchoolContext : DbContext
+{
+    public SchoolContext() : base()
+    {
+    }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+        modelBuilder.Entity<Student>().Property<DateTime>("CreatedDate");
+        modelBuilder.Entity<Student>().Property<DateTime>("UpdatedDate");
+    }
+    public DbSet<Student> Students { get; set; }
+}
+/*
+As you can see, the Property() method is used to configure a shadow property. Specify the name of the shadow property as a string and the type as a generic parameter.
+If the name specified in the Property() method matches the name of an existing property, then the EF Core will configure that existing property as a shadow property rather 
+than introducing a new shadow property.
+
+> Shadow Properties in the Database
+Once we define shadow properties, we need to update the database schema because shadow properties will be mapped to the corresponding database column.
+To do this, add database migration using the following command in Package Manager Console in Visual Studio.
+1. PM> add-migration <migration-name>
+2. PM> update-database
+Now, the Student table will include two columns, CreatedDate and UpdatedDate in SQL Server.
+Thus, the database will have corresponding columns even if we haven't included these properties in the Student class and configured them as shadow properties.
+*/
+//> Access Shadow Property
+//> You can get or set the values of the shadow properties using the Property() method of EntityEntry. The following code accesses the value of the shadow property.
+
+using (var context = new SchoolContext())
+{
+    var std = new Student(){ StudentName = "Bill"  };
+    
+    // sets the value to the shadow property
+    context.Entry(std).Property("CreatedDate").CurrentValue = DateTime.Now;
+
+    // gets the value of the shadow property
+    var createdDate = context.Entry(std).Property("CreatedDate").CurrentValue; 
+}
+/*
+However, in our scenario, we want to set the value to these shadow properties automatically on the SaveChanges() method, so that we don't have to set them manually on 
+each entity object. So, override the SaveChanges() method in the context class, as shown below.
+*/
+public override int SaveChanges()
+{
+    var entries = ChangeTracker
+        .Entries()
+        .Where(e =>
+                e.State == EntityState.Added
+                || e.State == EntityState.Modified);
+    foreach (var entityEntry in entries)
+    {
+        entityEntry.Property("UpdatedDate").CurrentValue = DateTime.Now;
+        if (entityEntry.State == EntityState.Added)
+        {
+            entityEntry.Property("CreatedDate").CurrentValue = DateTime.Now;
+        }
+    }
+    return base.SaveChanges();
+}
+//! This will automatically set values to CreatedDate and UpdatedDate shadow properties.
+//> Now, execute the following code and check the record in the database.
+using (var context = new SchoolContext())
+{
+    var std = new Student(){ StudentName = "Bill"  };
+    context.Add(std);
+    context.SaveChanges();
+}
+
+//> Configuring Shadow Properties on All Entities
+//> You can configure shadow properties on all entities at once, rather than configuring them manually for each.
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    var allEntities = modelBuilder.Model.GetEntityTypes();
+
+    foreach (var entity in allEntities)
+    {
+        entity.AddProperty("CreatedDate",typeof(DateTime));
+        entity.AddProperty("UpdatedDate",typeof(DateTime));
+    }
+}
+
+/*
+When to use shadow properties?
+Shadow properties can be used in two scenarios:
+
+1. When you don't want to expose database columns on the mapped entities, such as the scenario discussed above.
+2. When you don't want to expose foreign key properties and want to manage relationships only using navigation properties. 
+    The foreign key property will be a shadow property and mapped to the database column but will not be exposed as a property of an entity.
+    (In EF Core, if you don't define foreign key property in entity classes then it will automatically generate shadow property for that. You don't need to configure foreign key
+        property manually.)
+*/
