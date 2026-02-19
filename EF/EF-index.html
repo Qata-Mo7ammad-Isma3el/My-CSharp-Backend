@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entity Framework Core — Reference</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;1,400&family=Syne:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0e14;
+            --surface: #13161f;
+            --surface2: #1a1e2b;
+            --border: #252a3a;
+            --accent: #4fffb0;
+            --accent2: #7c83ff;
+            --accent3: #ff6b6b;
+            --accent4: #ffd166;
+            --text: #c8d0e0;
+            --text-dim: #5c6480;
+            --text-bright: #eef0f8;
+            --code-bg: #0a0c11;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            padding: 0 0 40px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .sidebar-header {
+            padding: 28px 24px 24px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            z-index: 10;
+        }
+
+        .sidebar-logo {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .sidebar-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-bright);
+            margin-top: 6px;
+            line-height: 1.3;
+        }
+
+        .nav-section-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            padding: 20px 24px 8px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 9px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--text-bright);
+            border-left-color: var(--accent);
+            background: rgba(79, 255, 176, 0.04);
+        }
+
+        .nav-item .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        /* Main content */
+        .main {
+            flex: 1;
+            max-width: 900px;
+            padding: 60px 64px;
+            overflow-x: hidden;
+        }
+
+        /* Hero */
+        .hero {
+            margin-bottom: 72px;
+            padding-bottom: 48px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            color: var(--text-bright);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text);
+            max-width: 560px;
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .pill {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid;
+        }
+
+        .pill-green {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(79, 255, 176, 0.06);
+        }
+
+        .pill-blue {
+            color: var(--accent2);
+            border-color: var(--accent2);
+            background: rgba(124, 131, 255, 0.06);
+        }
+
+        .pill-red {
+            color: var(--accent3);
+            border-color: var(--accent3);
+            background: rgba(255, 107, 107, 0.06);
+        }
+
+        .pill-yellow {
+            color: var(--accent4);
+            border-color: var(--accent4);
+            background: rgba(255, 209, 102, 0.06);
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 72px;
+            scroll-margin-top: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .section-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(79, 255, 176, 0.08);
+            border: 1px solid rgba(79, 255, 176, 0.2);
+            padding: 3px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .section h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-bright);
+            line-height: 1.2;
+        }
+
+        .section h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent2);
+            margin: 28px 0 12px;
+            letter-spacing: 0.03em;
+        }
+
+        .section h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent4);
+            margin: 20px 0 8px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .section p {
+            font-size: 14px;
+            line-height: 1.75;
+            color: var(--text);
+            margin-bottom: 14px;
+        }
+
+        /* Callouts */
+        .callout {
+            border-left: 3px solid;
+            padding: 14px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            font-size: 13.5px;
+            line-height: 1.65;
+        }
+
+        .callout-note {
+            border-color: var(--accent2);
+            background: rgba(124, 131, 255, 0.06);
+            color: var(--accent2);
+        }
+
+        .callout-warn {
+            border-color: var(--accent4);
+            background: rgba(255, 209, 102, 0.06);
+            color: var(--accent4);
+        }
+
+        .callout-danger {
+            border-color: var(--accent3);
+            background: rgba(255, 107, 107, 0.06);
+            color: var(--accent3);
+        }
+
+        .callout-tip {
+            border-color: var(--accent);
+            background: rgba(79, 255, 176, 0.06);
+            color: var(--accent);
+        }
+
+        .callout strong {
+            display: block;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        /* Code blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        pre::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-bright);
+        }
+
+        p code,
+        li code {
+            background: rgba(79, 255, 176, 0.08);
+            color: var(--accent);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .kw {
+            color: #7c83ff;
+        }
+
+        .type {
+            color: #4fffb0;
+        }
+
+        .str {
+            color: #ffd166;
+        }
+
+        .cmt {
+            color: #3d4460;
+            font-style: italic;
+        }
+
+        .num-lit {
+            color: #ff6b6b;
+        }
+
+        .method {
+            color: #c8d0e0;
+        }
+
+        /* Tables */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: var(--surface2);
+            color: var(--text-bright);
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: top;
+            line-height: 1.5;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        td code {
+            font-size: 12px;
+        }
+
+        /* State badges */
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .badge-added {
+            background: rgba(79, 255, 176, 0.15);
+            color: var(--accent);
+        }
+
+        .badge-modified {
+            background: rgba(124, 131, 255, 0.15);
+            color: var(--accent2);
+        }
+
+        .badge-deleted {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--accent3);
+        }
+
+        .badge-unchanged {
+            background: rgba(255, 209, 102, 0.10);
+            color: var(--accent4);
+        }
+
+        .badge-detached {
+            background: rgba(200, 208, 224, 0.08);
+            color: var(--text-dim);
+        }
+
+        /* Two-column info boxes */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .info-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .info-box h5 {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 40px 0;
+        }
+
+        /* SQL block */
+        .sql-block {
+            background: #0a0c11;
+            border: 1px solid #1e2235;
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin: 12px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            color: #a0aabe;
+            overflow-x: auto;
+        }
+
+        .sql-kw {
+            color: #7c83ff;
+            font-weight: 600;
+        }
+
+        .sql-val {
+            color: #ffd166;
+        }
+
+        .sql-cmt {
+            color: #333a55;
+        }
+
+        /* Scroll indicator */
+        .scroll-prog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transform-origin: left;
+            transform: scaleX(0);
+            z-index: 100;
+            transition: transform 0.1s linear;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                padding: 32px 24px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="scroll-prog" id="scrollProg"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">EF Core</div>
+            <div class="sidebar-title">Developer Reference</div>
+        </div>
+
+        <div class="nav-section-label">Fundamentals</div>
+        <a href="#intro" class="nav-item"><span class="num">00</span>Introduction</a>
+        <a href="#s01" class="nav-item"><span class="num">01</span>Entities</a>
+        <a href="#s02" class="nav-item"><span class="num">02</span>DbContext</a>
+        <a href="#s03" class="nav-item"><span class="num">03</span>Working with DbContext</a>
+        <a href="#s04" class="nav-item"><span class="num">04</span>Change Tracking</a>
+        <a href="#s05" class="nav-item"><span class="num">05</span>Connection Strings</a>
+
+        <div class="nav-section-label">Migrations</div>
+        <a href="#s06" class="nav-item"><span class="num">06</span>Migrations</a>
+        <a href="#s07" class="nav-item"><span class="num">07</span>SQL Scripts</a>
+        <a href="#s08" class="nav-item"><span class="num">08</span>PMC Commands</a>
+        <a href="#s09" class="nav-item"><span class="num">09</span>CLI Commands</a>
+
+        <div class="nav-section-label">CRUD Operations</div>
+        <a href="#s10" class="nav-item"><span class="num">10</span>Saving (Connected)</a>
+        <a href="#s11" class="nav-item"><span class="num">11</span>Querying</a>
+        <a href="#s12" class="nav-item"><span class="num">12</span>Insert (Disconnected)</a>
+        <a href="#s13" class="nav-item"><span class="num">13</span>Update (Disconnected)</a>
+        <a href="#s14" class="nav-item"><span class="num">14</span>Delete (Disconnected)</a>
+
+        <div class="nav-section-label">Conventions & Config</div>
+        <a href="#s15" class="nav-item"><span class="num">15</span>Conventions</a>
+        <a href="#s16" class="nav-item"><span class="num">16</span>One-to-Many</a>
+        <a href="#s17" class="nav-item"><span class="num">17</span>One-to-One</a>
+        <a href="#s18" class="nav-item"><span class="num">18</span>Configurations</a>
+
+        <div class="nav-section-label">Advanced</div>
+        <a href="#s19" class="nav-item"><span class="num">19</span>Many-to-Many</a>
+        <a href="#s22" class="nav-item"><span class="num">22</span>Shadow Properties</a>
+        <a href="#s23" class="nav-item"><span class="num">23</span>Disconnected Graphs</a>
+        <a href="#s26" class="nav-item"><span class="num">26</span>Stored Procedures</a>
+        <a href="#s27" class="nav-item"><span class="num">27</span>Database-First</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Hero -->
+        <div class="hero" id="intro">
+            <div class="hero-eyebrow">Personal Study Notes</div>
+            <h1>Entity Framework<br><span>Core</span></h1>
+            <p>An Object/Relational Mapping (ORM) framework that gives developers an automated mechanism for accessing
+                and storing data in the database. Built as an enhancement to ADO.NET.</p>
+            <div class="pill-row">
+                <span class="pill pill-green">Code-First</span>
+                <span class="pill pill-blue">Database-First</span>
+                <span class="pill pill-yellow">Migrations</span>
+                <span class="pill pill-red">Change Tracking</span>
+            </div>
+        </div>
+
+        <!-- Overview -->
+        <div class="section">
+            <div class="info-grid">
+                <div class="info-box">
+                    <h5 style="color: var(--accent)">Code-First</h5>
+                    <p>EF Core API creates the database and tables using migrations based on your domain classes. Useful
+                        for Domain Driven Design (DDD).</p>
+                </div>
+                <div class="info-box">
+                    <h5 style="color: var(--accent2)">Database-First</h5>
+                    <p>EF Core API creates domain and context classes based on an existing database using scaffold
+                        commands. Has limited tooling support.</p>
+                </div>
+            </div>
+
+            <h3>Database Providers</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Database</th>
+                            <th>NuGet Package</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SQL Server</td>
+                            <td><code>Microsoft.EntityFrameworkCore.SqlServer</code></td>
+                        </tr>
+                        <tr>
+                            <td>MySQL</td>
+                            <td><code>MySql.Data.EntityFrameworkCore</code></td>
+                        </tr>
+                        <tr>
+                            <td>PostgreSQL</td>
+                            <td><code>Npgsql.EntityFrameworkCore.PostgreSQL</code></td>
+                        </tr>
+                        <tr>
+                            <td>SQLite</td>
+                            <td><code>Microsoft.EntityFrameworkCore.SQLite</code></td>
+                        </tr>
+                        <tr>
+                            <td>In-Memory (testing)</td>
+                            <td><code>Microsoft.EntityFrameworkCore.InMemory</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- 01 Entities -->
+        <section class="section" id="s01">
+            <div class="section-header">
+                <span class="section-num">01</span>
+                <h2>Creating Entities</h2>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <h5 style="color:var(--accent)">Domain Classes</h5>
+                    <p>Model real-world entities and business rules. Live in the business logic layer. Not inherently
+                        tracked by EF.</p>
+                </div>
+                <div class="info-box">
+                    <h5 style="color:var(--accent2)">Entity Classes</h5>
+                    <p>Represent database tables. Must be included as <code>DbSet&lt;T&gt;</code> in the DbContext so EF
+                        can track them.</p>
+                </div>
+            </div>
+
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">Student</span>
+{
+    <span class="kw">public int</span> StudentId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> FirstName { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> LastName { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> GradeId { <span class="kw">get</span>; <span class="kw">set</span>; }          <span class="cmt">// FK property</span>
+    <span class="kw">public</span> <span class="type">Grade</span> Grade { <span class="kw">get</span>; <span class="kw">set</span>; }          <span class="cmt">// navigation property</span>
+}
+
+<span class="kw">public class</span> <span class="type">Grade</span>
+{
+    <span class="kw">public</span> <span class="type">Grade</span>() { Students = <span class="kw">new</span> <span class="type">List</span>&lt;<span class="type">Student</span>&gt;(); }
+    <span class="kw">public int</span> GradeId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> GradeName { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">IList</span>&lt;<span class="type">Student</span>&gt; Students { <span class="kw">get</span>; <span class="kw">set</span>; }  <span class="cmt">// collection navigation</span>
+}</code></pre>
+
+            <div class="callout callout-tip">
+                <strong>Key Point</strong>
+                To turn domain classes into EF entities, include them as <code>DbSet&lt;T&gt;</code> properties in the
+                DbContext class.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 02 DbContext -->
+        <section class="section" id="s02">
+            <div class="section-header">
+                <span class="section-num">02</span>
+                <h2>DbContext</h2>
+            </div>
+
+            <p>An instance of <code>DbContext</code> represents a session with the database. It combines the <em>Unit of
+                    Work</em> and <em>Repository</em> patterns. Use it to query and save entity instances.</p>
+
+            <h3>DbContext Responsibilities</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Responsibility</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Manage database connection</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Configure model and relationships</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Querying database (LINQ-to-Entities)</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Saving data to the database</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Configure change tracking</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Caching</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Transaction management</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Full Context Example</h3>
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">SchoolContext</span> : <span class="type">DbContext</span>
+{
+    <span class="cmt">// Entities → EF will create/manage corresponding DB tables</span>
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Student</span>&gt; Students { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">Grade</span>&gt;   Grades   { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">protected override void</span> <span class="method">OnConfiguring</span>(<span class="type">DbContextOptionsBuilder</span> optionsBuilder)
+    {
+        optionsBuilder.<span class="method">UseSqlServer</span>(
+            <span class="str">"Server=(localdb)\\mssqllocaldb;Database=SchoolDb;Trusted_Connection=True;"</span>
+        );
+    }
+}</code></pre>
+
+            <div class="callout callout-note">
+                <strong>File Placement</strong>
+                Convention: implement this class in <code>Data/ApplicationDbContext.cs</code> (or similar) in your
+                project.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 03 Working with DbContext -->
+        <section class="section" id="s03">
+            <div class="section-header">
+                <span class="section-num">03</span>
+                <h2>Working with DbContext</h2>
+            </div>
+
+            <p>Before saving or retrieving data, ensure the database schema exists. Two approaches:</p>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <h5 style="color:var(--accent4)">EnsureCreated()</h5>
+                    <p>Creates the database if it doesn't exist. Good for prototyping/testing. Cannot update schema
+                        after creation.</p>
+                </div>
+                <div class="info-box">
+                    <h5 style="color:var(--accent)">Migration API</h5>
+                    <p>Syncs schema changes over time. The correct approach for any real project. Tracks history in
+                        <code>__EFMigrationsHistory</code>.</p>
+                </div>
+            </div>
+
+            <pre data-lang="C#"><code><span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolDbContext</span>())
+{
+    context.Database.<span class="method">EnsureCreated</span>();  <span class="cmt">// creates DB if not exists</span>
+
+    <span class="kw">var</span> grade   = <span class="kw">new</span> <span class="type">Grade</span>() { GradeName = <span class="str">"1st Grade"</span> };
+    <span class="kw">var</span> student = <span class="kw">new</span> <span class="type">Student</span>() { FirstName = <span class="str">"Yash"</span>, Grade = grade };
+
+    context.Students.<span class="method">Add</span>(student);
+    context.<span class="method">SaveChanges</span>();  <span class="cmt">// persists to DB</span>
+
+    <span class="kw">foreach</span> (<span class="kw">var</span> s <span class="kw">in</span> context.Students)
+        Console.<span class="method">WriteLine</span>($<span class="str">"{s.FirstName} {s.LastName}"</span>);
+}</code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 04 Change Tracking -->
+        <section class="section" id="s04">
+            <div class="section-header">
+                <span class="section-num">04</span>
+                <h2>Change Tracking</h2>
+            </div>
+
+            <p>The <code>ChangeTracker</code> property tracks all entities retrieved or added within a DbContext scope.
+                EF uses this to build the right SQL on <code>SaveChanges()</code>.</p>
+
+            <h3>Entity States</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>When it happens</th>
+                            <th>SQL Generated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-unchanged">Unchanged</span></td>
+                            <td>Retrieved from DB, no changes made</td>
+                            <td>None</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-added">Added</span></td>
+                            <td>Entity created and added via <code>Add()</code> or <code>Update()</code> with no key
+                            </td>
+                            <td>INSERT</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-modified">Modified</span></td>
+                            <td>Property value changed while tracked</td>
+                            <td>UPDATE</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-deleted">Deleted</span></td>
+                            <td>Removed via <code>Remove()</code></td>
+                            <td>DELETE</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-detached">Detached</span></td>
+                            <td>Created outside context scope</td>
+                            <td>None (not tracked)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <pre data-lang="C#"><code><span class="cmt">// Unchanged</span>
+<span class="kw">var</span> student = context.Students.<span class="method">FirstOrDefault</span>();
+<span class="cmt">// → State: Unchanged</span>
+
+<span class="cmt">// Added</span>
+context.Students.<span class="method">Add</span>(<span class="kw">new</span> <span class="type">Student</span>() { FirstName = <span class="str">"Bill"</span> });
+<span class="cmt">// → State: Added</span>
+
+<span class="cmt">// Modified</span>
+student.LastName = <span class="str">"Friss"</span>;
+<span class="cmt">// → State: Modified (auto-detected)</span>
+
+<span class="cmt">// Deleted</span>
+context.Students.<span class="method">Remove</span>(student);
+<span class="cmt">// → State: Deleted</span>
+
+<span class="cmt">// Detached (created outside context scope)</span>
+<span class="kw">var</span> disconnected = <span class="kw">new</span> <span class="type">Student</span>() { StudentId = <span class="num-lit">1</span> };
+context.<span class="method">Entry</span>(disconnected).State; <span class="cmt">// → Detached</span></code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 05 Connection Strings -->
+        <section class="section" id="s05">
+            <div class="section-header">
+                <span class="section-num">05</span>
+                <h2>Connection Strings</h2>
+            </div>
+
+            <h3>Common Formats</h3>
+            <pre data-lang="Connection String"><code><span class="cmt">// Standard format</span>
+Server={server_address};Database={db_name};UserId={user};Password={pass};
+
+<span class="cmt">// Windows Authentication</span>
+Server={server_address};Database={db_name};Trusted_Connection=True;
+
+<span class="cmt">// Alternative (Integrated Security)</span>
+Data Source={server};Initial Catalog={db};Integrated Security=True;</code></pre>
+
+            <h3>Option 1 — Hardcode in OnConfiguring</h3>
+            <pre data-lang="C#"><code><span class="kw">protected override void</span> <span class="method">OnConfiguring</span>(<span class="type">DbContextOptionsBuilder</span> optionsBuilder)
+{
+    optionsBuilder.<span class="method">UseSqlServer</span>(<span class="str">"Server=(localdb)\\mssqllocaldb;Database=SchoolDb;Trusted_Connection=True;"</span>);
+}</code></pre>
+
+            <h3>Option 2 — appsettings.json</h3>
+            <pre data-lang="JSON"><code>{
+  <span class="str">"ConnectionStrings"</span>: {
+    <span class="str">"SchoolDBLocalConnection"</span>: <span class="str">"Server=(localdb)\\mssqllocaldb;Database=SchoolDb;Trusted_Connection=True;"</span>
+  }
+}</code></pre>
+
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">SchoolContext</span> : <span class="type">DbContext</span>
+{
+    <span class="type">IConfiguration</span> _config;
+    <span class="kw">public</span> <span class="type">SchoolContext</span>(<span class="type">IConfiguration</span> config) { _config = config; }
+
+    <span class="kw">protected override void</span> <span class="method">OnConfiguring</span>(<span class="type">DbContextOptionsBuilder</span> optionsBuilder)
+    {
+        optionsBuilder.<span class="method">UseSqlServer</span>(_config.<span class="method">GetConnectionString</span>(<span class="str">"SchoolDBLocalConnection"</span>));
+    }
+}</code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 06 Migrations -->
+        <section class="section" id="s06">
+            <div class="section-header">
+                <span class="section-num">06</span>
+                <h2>Migrations</h2>
+            </div>
+
+            <p>Migrations keep the database schema in sync with your EF Core model. Install
+                <code>Microsoft.EntityFrameworkCore.Tools</code> NuGet package first.</p>
+
+            <h3>Core Workflow</h3>
+            <pre data-lang="PowerShell"><code><span class="cmt"># 1. Add initial migration</span>
+PM> Add-Migration InitialSchoolDB
+
+<span class="cmt"># 2. Apply migration to database</span>
+PM> Update-Database
+
+<span class="cmt"># 3. After modifying entities, add another migration</span>
+PM> Add-Migration ModifiedStudentEntity
+PM> Update-Database</code></pre>
+
+            <h3>Reverting, Listing &amp; Removing</h3>
+            <pre data-lang="PowerShell"><code><span class="cmt"># Revert to a specific migration</span>
+PM> Update-Database "InitialSchoolDB"
+
+<span class="cmt"># List all migrations</span>
+PM> Get-Migration
+
+<span class="cmt"># Remove the last (unapplied) migration</span>
+PM> Remove-Migration</code></pre>
+
+            <div class="callout callout-warn">
+                <strong>Important</strong>
+                <code>EnsureCreated()</code> only works for the initial schema. Use Migrations API for all development
+                projects where the schema will evolve.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 07 SQL Scripts -->
+        <section class="section" id="s07">
+            <div class="section-header">
+                <span class="section-num">07</span>
+                <h2>Generating SQL Scripts</h2>
+            </div>
+
+            <div class="callout callout-tip">
+                <strong>Best Practice</strong>
+                Deploy migrations to production by generating SQL scripts rather than running
+                <code>Update-Database</code> directly.
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PMC Command</th>
+                            <th>.NET CLI Command</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Script-Migration</code></td>
+                            <td><code>dotnet ef migrations script</code></td>
+                            <td>Script for all migrations</td>
+                        </tr>
+                        <tr>
+                            <td><code>Script-Migration &lt;From&gt;</code></td>
+                            <td><code>dotnet ef migrations script &lt;From&gt;</code></td>
+                            <td>Script from a specific migration to latest</td>
+                        </tr>
+                        <tr>
+                            <td><code>Script-Migration &lt;F&gt; &lt;T&gt;</code></td>
+                            <td><code>dotnet ef migrations script &lt;F&gt; &lt;T&gt;</code></td>
+                            <td>Script between two specific migrations</td>
+                        </tr>
+                        <tr>
+                            <td><code>Script-Migration -Idempotent</code></td>
+                            <td><code>dotnet ef migrations script --idempotent</code></td>
+                            <td>Checks existence before applying each migration</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 08 PMC Commands -->
+        <section class="section" id="s08">
+            <div class="section-header">
+                <span class="section-num">08</span>
+                <h2>PMC Commands</h2>
+            </div>
+            <p>Access via Visual Studio → Tools → NuGet Package Manager → Package Manager Console.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Add-Migration &lt;name&gt;</code></td>
+                            <td>Creates a new migration snapshot</td>
+                        </tr>
+                        <tr>
+                            <td><code>Remove-Migration</code></td>
+                            <td>Removes the last (unapplied) migration</td>
+                        </tr>
+                        <tr>
+                            <td><code>Update-Database</code></td>
+                            <td>Applies pending migrations to the database</td>
+                        </tr>
+                        <tr>
+                            <td><code>Script-Migration</code></td>
+                            <td>Generates SQL script from migrations</td>
+                        </tr>
+                        <tr>
+                            <td><code>Scaffold-DbContext</code></td>
+                            <td>Reverse-engineers DbContext and entity classes from an existing DB</td>
+                        </tr>
+                        <tr>
+                            <td><code>Get-DbContext</code></td>
+                            <td>Gets information about a DbContext type</td>
+                        </tr>
+                        <tr>
+                            <td><code>Drop-Database</code></td>
+                            <td>Drops the database</td>
+                        </tr>
+                        <tr>
+                            <td><code>Get-Help entityframework</code></td>
+                            <td>Shows help for all EF commands</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 09 CLI -->
+        <section class="section" id="s09">
+            <div class="section-header">
+                <span class="section-num">09</span>
+                <h2>CLI Commands</h2>
+            </div>
+            <pre data-lang="Shell"><code><span class="cmt"># Install global EF CLI tools</span>
+dotnet tool install --global dotnet-ef</code></pre>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Command</th>
+                            <th>Sub-command</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="2"><code>database</code></td>
+                            <td><code>drop</code></td>
+                            <td>Drops the database</td>
+                        </tr>
+                        <tr>
+                            <td><code>update</code></td>
+                            <td>Applies migrations to the database</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3"><code>dbcontext</code></td>
+                            <td><code>info</code></td>
+                            <td>Gets DbContext info</td>
+                        </tr>
+                        <tr>
+                            <td><code>list</code></td>
+                            <td>Lists available DbContext types</td>
+                        </tr>
+                        <tr>
+                            <td><code>scaffold</code></td>
+                            <td>Generates DbContext and entities from an existing DB</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="4"><code>migrations</code></td>
+                            <td><code>add</code></td>
+                            <td>Creates a new migration</td>
+                        </tr>
+                        <tr>
+                            <td><code>list</code></td>
+                            <td>Lists all migrations</td>
+                        </tr>
+                        <tr>
+                            <td><code>remove</code></td>
+                            <td>Removes the last migration</td>
+                        </tr>
+                        <tr>
+                            <td><code>script</code></td>
+                            <td>Generates SQL script from migrations</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 10 CRUD Connected -->
+        <section class="section" id="s10">
+            <div class="section-header">
+                <span class="section-num">10</span>
+                <h2>Saving Data — Connected Scenario</h2>
+            </div>
+
+            <p>In the connected scenario, the <strong>same DbContext instance</strong> is used to retrieve and save
+                entities. EF automatically tracks state changes.</p>
+
+            <h3>Insert</h3>
+            <pre data-lang="C#"><code><span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolContext</span>())
+{
+    <span class="kw">var</span> std = <span class="kw">new</span> <span class="type">Student</span>() { FirstName = <span class="str">"Bill"</span>, LastName = <span class="str">"Gates"</span> };
+    context.Students.<span class="method">Add</span>(std);  <span class="cmt">// marks as Added</span>
+    context.<span class="method">SaveChanges</span>();       <span class="cmt">// executes INSERT; std.StudentId is auto-populated</span>
+}</code></pre>
+
+            <h3>Update</h3>
+            <pre data-lang="C#"><code><span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolContext</span>())
+{
+    <span class="kw">var</span> std = context.Students.<span class="method">First</span>&lt;<span class="type">Student</span>&gt;();
+    std.FirstName = <span class="str">"Steve"</span>;      <span class="cmt">// EF auto-sets state to Modified</span>
+    context.<span class="method">SaveChanges</span>();        <span class="cmt">// executes UPDATE (only changed columns)</span>
+}</code></pre>
+
+            <h3>Delete</h3>
+            <pre data-lang="C#"><code><span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolContext</span>())
+{
+    <span class="kw">var</span> std = context.Students.<span class="method">First</span>&lt;<span class="type">Student</span>&gt;();
+    context.Students.<span class="method">Remove</span>(std);  <span class="cmt">// marks as Deleted</span>
+    context.<span class="method">SaveChanges</span>();          <span class="cmt">// executes DELETE</span>
+}</code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 11 Querying -->
+        <section class="section" id="s11">
+            <div class="section-header">
+                <span class="section-num">11</span>
+                <h2>Querying</h2>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <h5 style="color:var(--accent2)">IEnumerable</h5>
+                    <p>In-memory collections. Query executes in memory on entire loaded data set. No deferred execution.
+                    </p>
+                </div>
+                <div class="info-box">
+                    <h5 style="color:var(--accent)">IQueryable</h5>
+                    <p>External data sources (DB). Query is translated to SQL and executed server-side. Supports
+                        deferred execution.</p>
+                </div>
+            </div>
+
+            <div class="callout callout-note">
+                <strong>Deferred Execution</strong>
+                A LINQ query is not executed when declared — it's stored and only executed when iterated (e.g.,
+                <code>.ToList()</code>, <code>foreach</code>).
+            </div>
+
+            <h3>C# Functions in Queries (EF Core only)</h3>
+            <pre
+                data-lang="C#"><code><span class="kw">var</span> students = context.Students
+    .<span class="method">Where</span>(s => s.FirstName == <span class="method">GetName</span>())  <span class="cmt">// C# function allowed in EF Core</span>
+    .<span class="method">ToList</span>();
+
+<span class="kw">static string</span> <span class="method">GetName</span>() => <span class="str">"Bill"</span>;</code></pre>
+
+            <h3>Eager Loading with Include</h3>
+            <pre data-lang="C#"><code><span class="kw">var</span> student = context.Students
+    .<span class="method">Where</span>(s => s.FirstName == <span class="str">"Bill"</span>)
+    .<span class="method">Include</span>(s => s.Grade)          <span class="cmt">// loads related Grade in same SQL query (LEFT JOIN)</span>
+    .<span class="method">FirstOrDefault</span>();
+
+<span class="cmt">// Multiple levels: EF Core-only ThenInclude()</span>
+<span class="kw">var</span> student = context.Students
+    .<span class="method">Include</span>(s => s.Grade)
+        .<span class="method">ThenInclude</span>(g => g.Department)  <span class="cmt">// EF 6 does NOT have ThenInclude</span>
+    .<span class="method">FirstOrDefault</span>();</code></pre>
+
+            <div class="callout callout-warn">
+                <strong>Include Limitations</strong>
+                Cannot be used after <code>DbSet.Find()</code>. Can be used after <code>FromSql()</code>.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 12 Insert Disconnected -->
+        <section class="section" id="s12">
+            <div class="section-header">
+                <span class="section-num">12</span>
+                <h2>Insert — Disconnected Scenario</h2>
+            </div>
+
+            <p>In a disconnected scenario (e.g. web apps), entities live outside the DbContext scope. You must attach
+                them manually with the correct state before calling <code>SaveChanges()</code>.</p>
+
+            <pre data-lang="C#"><code><span class="kw">var</span> std = <span class="kw">new</span> <span class="type">Student</span>() { Name = <span class="str">"Bill"</span> };  <span class="cmt">// disconnected entity</span>
+
+<span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolContext</span>())
+{
+    context.<span class="method">Add</span>&lt;<span class="type">Student</span>&gt;(std);     <span class="cmt">// marks as Added</span>
+    <span class="cmt">// equivalent alternatives:</span>
+    <span class="cmt">// context.Students.Add(std);</span>
+    <span class="cmt">// context.Entry(std).State = EntityState.Added;</span>
+    <span class="cmt">// context.Attach(std);  // if no key value</span>
+    context.<span class="method">SaveChanges</span>();
+}</code></pre>
+
+            <h3>Methods for Attaching (INSERT)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Behavior</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Add / AddRange</code></td>
+                            <td>Always marks entity as <span class="badge badge-added">Added</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>Attach</code></td>
+                            <td>Key exists → <span class="badge badge-unchanged">Unchanged</span>; no key → <span
+                                    class="badge badge-added">Added</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>Entry().State = Added</code></td>
+                            <td>Explicitly sets state to <span class="badge badge-added">Added</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>AddAsync / AddRangeAsync</code></td>
+                            <td>Async version of Add</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 13 Update Disconnected -->
+        <section class="section" id="s13">
+            <div class="section-header">
+                <span class="section-num">13</span>
+                <h2>Update — Disconnected Scenario</h2>
+            </div>
+
+            <pre data-lang="C#"><code><span class="kw">var</span> stud = <span class="kw">new</span> <span class="type">Student</span>() { StudentId = <span class="num-lit">1</span>, Name = <span class="str">"Steve"</span> };
+
+<span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolContext</span>())
+{
+    context.<span class="method">Update</span>&lt;<span class="type">Student</span>&gt;(stud);  <span class="cmt">// marks as Modified (key exists)</span>
+    <span class="cmt">// if key is 0/null, it's treated as Added instead</span>
+    context.<span class="method">SaveChanges</span>();
+}</code></pre>
+
+            <div class="callout callout-danger">
+                <strong>Exception Trap</strong>
+                <code>Update()</code> throws <code>InvalidOperationException</code> if the context is already tracking
+                an entity with the same key. Load the entity first or use <code>AsNoTracking()</code>.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 14 Delete Disconnected -->
+        <section class="section" id="s14">
+            <div class="section-header">
+                <span class="section-num">14</span>
+                <h2>Delete — Disconnected Scenario</h2>
+            </div>
+
+            <pre data-lang="C#"><code><span class="kw">var</span> student = <span class="kw">new</span> <span class="type">Student</span>() { StudentId = <span class="num-lit">1</span> };
+
+<span class="kw">using</span> (<span class="kw">var</span> context = <span class="kw">new</span> <span class="type">SchoolContext</span>())
+{
+    context.<span class="method">Remove</span>&lt;<span class="type">Student</span>&gt;(student);  <span class="cmt">// marks as Deleted</span>
+    <span class="cmt">// alternatives: context.Students.Remove(student)</span>
+    <span class="cmt">//               context.Entry(student).State = EntityState.Deleted</span>
+    context.<span class="method">SaveChanges</span>();              <span class="cmt">// executes DELETE</span>
+}</code></pre>
+
+            <div class="callout callout-tip">
+                <strong>Note</strong>
+                If the entity doesn't exist in the database, no exception is thrown — the DELETE simply affects 0 rows.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 15 Conventions -->
+        <section class="section" id="s15">
+            <div class="section-header">
+                <span class="section-num">15</span>
+                <h2>EF Core Conventions</h2>
+            </div>
+
+            <p>Default rules EF uses to build the model from your entity classes without any explicit configuration.</p>
+
+            <h3>Key Conventions</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Convention</th>
+                            <th>Rule</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Schema</strong></td>
+                            <td>All objects created in the <code>dbo</code> schema by default</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Table Name</strong></td>
+                            <td>Same as the <code>DbSet&lt;T&gt;</code> property name in the context</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Column Name</strong></td>
+                            <td>Same as the property name in the entity class</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Primary Key</strong></td>
+                            <td>Property named <code>Id</code> or <code>&lt;ClassName&gt;Id</code> (case insensitive)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Foreign Key</strong></td>
+                            <td><code>&lt;NavPropName&gt;Id</code> or
+                                <code>&lt;NavPropName&gt;&lt;PrincipalPK&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nullable</strong></td>
+                            <td>Reference types (<code>string</code>) and <code>Nullable&lt;T&gt;</code> → nullable
+                                column</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Not Null</strong></td>
+                            <td>Value types (<code>int</code>, <code>bool</code>, etc.) and PK properties → NOT NULL
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>C# → SQL Server Type Mapping</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>C# Type</th>
+                            <th>SQL Server Type</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>int</code></td>
+                            <td><code>int</code></td>
+                            <td>Standard 32-bit integer</td>
+                        </tr>
+                        <tr>
+                            <td><code>string</code></td>
+                            <td><code>nvarchar(Max)</code></td>
+                            <td>Use <code>[MaxLength]</code> to limit</td>
+                        </tr>
+                        <tr>
+                            <td><code>decimal</code></td>
+                            <td><code>decimal(18,2)</code></td>
+                            <td>Precision customizable</td>
+                        </tr>
+                        <tr>
+                            <td><code>float</code></td>
+                            <td><code>real</code></td>
+                            <td>7-digit precision</td>
+                        </tr>
+                        <tr>
+                            <td><code>byte[]</code></td>
+                            <td><code>varbinary(Max)</code></td>
+                            <td>Binary data</td>
+                        </tr>
+                        <tr>
+                            <td><code>DateTime</code></td>
+                            <td><code>datetime</code></td>
+                            <td>Maps to <code>datetime2</code> in modern versions</td>
+                        </tr>
+                        <tr>
+                            <td><code>bool</code></td>
+                            <td><code>bit</code></td>
+                            <td>0 or 1</td>
+                        </tr>
+                        <tr>
+                            <td><code>long</code></td>
+                            <td><code>bigint</code></td>
+                            <td>64-bit signed</td>
+                        </tr>
+                        <tr>
+                            <td><code>double</code></td>
+                            <td><code>float</code></td>
+                            <td>15-digit precision</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 16 One-to-Many -->
+        <section class="section" id="s16">
+            <div class="section-header">
+                <span class="section-num">16</span>
+                <h2>One-to-Many Relationship Conventions</h2>
+            </div>
+
+            <p>EF Core can auto-detect one-to-many relationships through four convention patterns:</p>
+
+            <h3>Convention 1 — Reference navigation on dependent only</h3>
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">Student</span> <span class="cmt">// dependent</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">Grade</span> Grade { <span class="kw">get</span>; <span class="kw">set</span>; }  <span class="cmt">// nullable FK GradeId created (shadow property)</span>
+}</code></pre>
+
+            <h3>Convention 2 — Collection navigation on principal only</h3>
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">Grade</span> <span class="cmt">// principal</span>
+{
+    <span class="kw">public int</span> GradeId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">ICollection</span>&lt;<span class="type">Student</span>&gt; Students { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+
+            <h3>Convention 3 — Navigation on both ends</h3>
+            <p>Combine conventions 1 + 2 (reference on dependent, collection on principal).</p>
+
+            <h3>Convention 4 — Full definition with explicit FK (recommended)</h3>
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">Student</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> GradeId { <span class="kw">get</span>; <span class="kw">set</span>; }        <span class="cmt">// explicit FK — creates NOT NULL column</span>
+    <span class="kw">public</span> <span class="type">Grade</span> Grade { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+<span class="kw">public class</span> <span class="type">Grade</span>
+{
+    <span class="kw">public int</span> GradeId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">ICollection</span>&lt;<span class="type">Student</span>&gt; Students { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+
+            <div class="callout callout-warn">
+                <strong>Nullable FK</strong>
+                Using <code>int GradeId</code> (value type) creates a NOT NULL FK. Use <code>int? GradeId</code> for a
+                nullable FK.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 17 One-to-One -->
+        <section class="section" id="s17">
+            <div class="section-header">
+                <span class="section-num">17</span>
+                <h2>One-to-One Relationship Conventions</h2>
+            </div>
+
+            <p>Requires a reference navigation property on both sides. EF Core creates a unique index on the FK column
+                to enforce the one-to-one constraint.</p>
+
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">Student</span>  <span class="cmt">// principal</span>
+{
+    <span class="kw">public int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">StudentAddress</span> Address { <span class="kw">get</span>; <span class="kw">set</span>; }  <span class="cmt">// reference navigation</span>
+}
+
+<span class="kw">public class</span> <span class="type">StudentAddress</span>  <span class="cmt">// dependent</span>
+{
+    <span class="kw">public int</span> StudentAddressId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span> City { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> StudentId { <span class="kw">get</span>; <span class="kw">set</span>; }       <span class="cmt">// FK with unique index</span>
+    <span class="kw">public</span> <span class="type">Student</span> Student { <span class="kw">get</span>; <span class="kw">set</span>; }      <span class="cmt">// reference navigation back</span>
+}</code></pre>
+
+            <div class="callout callout-note">
+                <strong>Tip</strong>
+                Use Fluent API to configure one-to-one relationships when entities don't follow conventions.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 18 Configurations -->
+        <section class="section" id="s18">
+            <div class="section-header">
+                <span class="section-num">18</span>
+                <h2>Configurations</h2>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-box">
+                    <h5 style="color:var(--accent2)">Data Annotations</h5>
+                    <p>Attribute-based. Simpler but limited. Attributes live in
+                        <code>System.ComponentModel.DataAnnotations</code> and <code>.Schema</code>.</p>
+                </div>
+                <div class="info-box">
+                    <h5 style="color:var(--accent)">Fluent API</h5>
+                    <p>Code-based via <code>OnModelCreating()</code>. Full configuration options. Always wins over Data
+                        Annotations when conflicts arise.</p>
+                </div>
+            </div>
+
+            <h3>Data Annotations Example</h3>
+            <pre data-lang="C#"><code>[<span class="type">Table</span>(<span class="str">"StudentInfo"</span>)]
+<span class="kw">public class</span> <span class="type">Student</span>
+{
+    [<span class="type">Key</span>]
+    <span class="kw">public int</span> SID { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    [<span class="type">Column</span>(<span class="str">"Name"</span>, TypeName=<span class="str">"ntext"</span>)]
+    [<span class="type">MaxLength</span>(<span class="num-lit">20</span>)]
+    <span class="kw">public string</span> StudentName { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    [<span class="type">NotMapped</span>]                          <span class="cmt">// not a DB column</span>
+    <span class="kw">public int</span>? Age { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">public int</span> StdId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    [<span class="type">ForeignKey</span>(<span class="str">"StdId"</span>)]
+    <span class="kw">public virtual</span> <span class="type">Standard</span> Standard { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+
+            <h3>Common Attributes Reference</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Attribute</th>
+                            <th>Namespace</th>
+                            <th>Effect</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>[Key]</code></td>
+                            <td>DataAnnotations</td>
+                            <td>Marks as Primary Key</td>
+                        </tr>
+                        <tr>
+                            <td><code>[Required]</code></td>
+                            <td>DataAnnotations</td>
+                            <td>Sets column NOT NULL</td>
+                        </tr>
+                        <tr>
+                            <td><code>[MaxLength(n)]</code></td>
+                            <td>DataAnnotations</td>
+                            <td>Sets max column size</td>
+                        </tr>
+                        <tr>
+                            <td><code>[Timestamp]</code></td>
+                            <td>DataAnnotations</td>
+                            <td>Row version for concurrency</td>
+                        </tr>
+                        <tr>
+                            <td><code>[Table("name")]</code></td>
+                            <td>Schema</td>
+                            <td>Custom table name</td>
+                        </tr>
+                        <tr>
+                            <td><code>[Column("name")]</code></td>
+                            <td>Schema</td>
+                            <td>Custom column name/type</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NotMapped]</code></td>
+                            <td>Schema</td>
+                            <td>Excludes from DB mapping</td>
+                        </tr>
+                        <tr>
+                            <td><code>[ForeignKey("prop")]</code></td>
+                            <td>Schema</td>
+                            <td>Specifies FK property</td>
+                        </tr>
+                        <tr>
+                            <td><code>[DatabaseGenerated]</code></td>
+                            <td>Schema</td>
+                            <td>Identity / Computed / None</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Fluent API Reference</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Scope</th>
+                            <th>Method</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Model</td>
+                            <td><code>HasDefaultSchema()</code></td>
+                            <td>Set default DB schema</td>
+                        </tr>
+                        <tr>
+                            <td>Model</td>
+                            <td><code>HasDbFunction()</code></td>
+                            <td>Map a DB function</td>
+                        </tr>
+                        <tr>
+                            <td>Entity</td>
+                            <td><code>HasKey()</code></td>
+                            <td>Set primary key</td>
+                        </tr>
+                        <tr>
+                            <td>Entity</td>
+                            <td><code>HasIndex()</code></td>
+                            <td>Create an index</td>
+                        </tr>
+                        <tr>
+                            <td>Entity</td>
+                            <td><code>HasOne()</code></td>
+                            <td>Configure one-side of relationship</td>
+                        </tr>
+                        <tr>
+                            <td>Entity</td>
+                            <td><code>HasMany()</code></td>
+                            <td>Configure many-side of relationship</td>
+                        </tr>
+                        <tr>
+                            <td>Entity</td>
+                            <td><code>Ignore()</code></td>
+                            <td>Exclude from mapping</td>
+                        </tr>
+                        <tr>
+                            <td>Property</td>
+                            <td><code>IsRequired()</code></td>
+                            <td>NOT NULL constraint</td>
+                        </tr>
+                        <tr>
+                            <td>Property</td>
+                            <td><code>HasMaxLength(n)</code></td>
+                            <td>Set max length</td>
+                        </tr>
+                        <tr>
+                            <td>Property</td>
+                            <td><code>HasColumnName()</code></td>
+                            <td>Set custom column name</td>
+                        </tr>
+                        <tr>
+                            <td>Property</td>
+                            <td><code>HasDefaultValue()</code></td>
+                            <td>Set default value</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 19 Many-to-Many -->
+        <section class="section" id="s19">
+            <div class="section-header">
+                <span class="section-num">19</span>
+                <h2>Many-to-Many Relationships</h2>
+            </div>
+
+            <p>EF Core requires a joining (junction) entity class. Configure the composite primary key via Fluent API.
+            </p>
+
+            <pre data-lang="C#"><code><span class="kw">public class</span> <span class="type">Student</span>
+{
+    <span class="kw">public int</span> StudentId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">IList</span>&lt;<span class="type">StudentCourse</span>&gt; StudentCourses { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="type">Course</span>
+{
+    <span class="kw">public int</span> CourseId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">IList</span>&lt;<span class="type">StudentCourse</span>&gt; StudentCourses { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="kw">public class</span> <span class="type">StudentCourse</span>  <span class="cmt">// joining entity</span>
+{
+    <span class="kw">public int</span> StudentId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">Student</span> Student { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span> CourseId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public</span> <span class="type">Course</span> Course { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+
+            <pre data-lang="C#"><code><span class="cmt">// Fluent API — composite PK required for joining table</span>
+<span class="kw">protected override void</span> <span class="method">OnModelCreating</span>(<span class="type">ModelBuilder</span> modelBuilder)
+{
+    modelBuilder.<span class="method">Entity</span>&lt;<span class="type">StudentCourse</span>&gt;()
+        .<span class="method">HasKey</span>(sc => <span class="kw">new</span> { sc.StudentId, sc.CourseId });
+}</code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 22 Shadow Properties -->
+        <section class="section" id="s22">
+            <div class="section-header">
+                <span class="section-num">22</span>
+                <h2>Shadow Properties</h2>
+            </div>
+
+            <p>Properties that exist in the EF model and database column but are <strong>not defined</strong> in the
+                .NET entity class. Managed purely by the ChangeTracker.</p>
+
+            <p>Useful for: audit timestamps, foreign key columns you don't want to expose on the entity.</p>
+
+            <pre
+                data-lang="C#"><code><span class="cmt">// Define shadow properties in OnModelCreating</span>
+<span class="kw">protected override void</span> <span class="method">OnModelCreating</span>(<span class="type">ModelBuilder</span> modelBuilder)
+{
+    modelBuilder.<span class="method">Entity</span>&lt;<span class="type">Student</span>&gt;().<span class="method">Property</span>&lt;<span class="type">DateTime</span>&gt;(<span class="str">"CreatedDate"</span>);
+    modelBuilder.<span class="method">Entity</span>&lt;<span class="type">Student</span>&gt;().<span class="method">Property</span>&lt;<span class="type">DateTime</span>&gt;(<span class="str">"UpdatedDate"</span>);
+}
+
+<span class="cmt">// Auto-set in overridden SaveChanges()</span>
+<span class="kw">public override int</span> <span class="method">SaveChanges</span>()
+{
+    <span class="kw">var</span> entries = ChangeTracker.Entries()
+        .<span class="method">Where</span>(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+    <span class="kw">foreach</span> (<span class="kw">var</span> entry <span class="kw">in</span> entries)
+    {
+        entry.<span class="method">Property</span>(<span class="str">"UpdatedDate"</span>).CurrentValue = DateTime.Now;
+        <span class="kw">if</span> (entry.State == EntityState.Added)
+            entry.<span class="method">Property</span>(<span class="str">"CreatedDate"</span>).CurrentValue = DateTime.Now;
+    }
+    <span class="kw">return base</span>.<span class="method">SaveChanges</span>();
+}
+
+<span class="cmt">// Access a shadow property value</span>
+context.<span class="method">Entry</span>(std).<span class="method">Property</span>(<span class="str">"CreatedDate"</span>).CurrentValue;</code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 23 Disconnected Graphs -->
+        <section class="section" id="s23">
+            <div class="section-header">
+                <span class="section-num">23</span>
+                <h2>Disconnected Entity Graphs</h2>
+            </div>
+
+            <p>When attaching a full entity graph (entity + related entities), each method handles child entity states
+                differently:</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method / State</th>
+                            <th>Root (with key)</th>
+                            <th>Root (no key)</th>
+                            <th>Child (with key)</th>
+                            <th>Child (no key)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Attach(graph)</code></td>
+                            <td><span class="badge badge-unchanged">Unchanged</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                            <td><span class="badge badge-unchanged">Unchanged</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>.State = Added</code></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>.State = Modified</code></td>
+                            <td><span class="badge badge-modified">Modified</span></td>
+                            <td><span class="badge badge-deleted">Exception</span></td>
+                            <td><span class="badge badge-unchanged">Unchanged</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>.State = Deleted</code></td>
+                            <td><span class="badge badge-deleted">Deleted</span></td>
+                            <td><span class="badge badge-deleted">Exception</span></td>
+                            <td><span class="badge badge-unchanged">Unchanged</span></td>
+                            <td><span class="badge badge-added">Added</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout callout-note">
+                <strong>Entry() vs Attach()</strong>
+                <code>DbContext.Entry()</code> only tracks the single root entity — it does NOT propagate state to child
+                entities. Use <code>Attach()</code> or <code>Add()</code> / <code>Update()</code> when you need the
+                entire graph tracked.
+            </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 26 Stored Procedures -->
+        <section class="section" id="s26">
+            <div class="section-header">
+                <span class="section-num">26</span>
+                <h2>Stored Procedures</h2>
+            </div>
+
+            <h3>Execute with FromSql (returns entities)</h3>
+            <pre
+                data-lang="C#"><code><span class="cmt">// String literal</span>
+<span class="kw">var</span> students = context.Students.<span class="method">FromSql</span>(<span class="str">"GetStudents 'Bill'"</span>).<span class="method">ToList</span>();
+
+<span class="cmt">// Interpolated string (safe)</span>
+<span class="kw">var</span> name = <span class="str">"Bill"</span>;
+<span class="kw">var</span> students = context.Students.<span class="method">FromSql</span>($<span class="str">"GetStudents {name}"</span>).<span class="method">ToList</span>();
+
+<span class="cmt">// SqlParameter</span>
+<span class="kw">var</span> param = <span class="kw">new</span> <span class="type">SqlParameter</span>(<span class="str">"@FirstName"</span>, <span class="str">"Bill"</span>);
+<span class="kw">var</span> students = context.Students.<span class="method">FromSql</span>(<span class="str">"GetStudents @FirstName"</span>, param).<span class="method">ToList</span>();
+
+<span class="cmt">// Positional parameters</span>
+<span class="kw">var</span> students = context.Students.<span class="method">FromSql</span>(<span class="str">"GetStudents @p0"</span>, <span class="str">"Bill"</span>).<span class="method">ToList</span>();</code></pre>
+
+            <h3>Execute with ExecuteSqlCommand (INSERT/UPDATE/DELETE)</h3>
+            <pre data-lang="C#"><code><span class="cmt">// Returns number of rows affected</span>
+<span class="kw">var</span> rows = context.Database.<span class="method">ExecuteSqlCommand</span>(
+    <span class="str">"Update Students set FirstName='Bill' where StudentId=1"</span>
+);
+
+<span class="cmt">// With stored procedure and parameters</span>
+context.Database.<span class="method">ExecuteSqlCommand</span>(
+    <span class="str">"CreateStudent @p0, @p1"</span>,
+    parameters: <span class="kw">new</span>[] { <span class="str">"Bill"</span>, <span class="str">"Gates"</span> }
+);</code></pre>
+
+            <h3>Creating Stored Procedures via Migration (Code-First)</h3>
+            <pre data-lang="C#"><code><span class="kw">protected override void</span> <span class="method">Up</span>(<span class="type">MigrationBuilder</span> migrationBuilder)
+{
+    <span class="kw">var</span> sp = <span class="str">@"CREATE PROCEDURE [dbo].[GetStudents]
+                @FirstName varchar(50)
+            AS BEGIN
+                SET NOCOUNT ON;
+                select * from Students where FirstName like @FirstName + '%'
+            END"</span>;
+    migrationBuilder.<span class="method">Sql</span>(sp);
+}</code></pre>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 27 Database-First -->
+        <section class="section" id="s27">
+            <div class="section-header">
+                <span class="section-num">27</span>
+                <h2>Database-First (Scaffold)</h2>
+            </div>
+
+            <p>Generate entity and context classes from an existing database using reverse engineering. EF Core only
+                supports this via CLI — no visual designer.</p>
+
+            <h3>PMC Command</h3>
+            <pre data-lang="PowerShell"><code>PM> Scaffold-DbContext <span class="str">"Server=.\SQLExpress;Database=SchoolDB;Trusted_Connection=True;"</span> `
+    Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models</code></pre>
+
+            <h3>.NET CLI Command</h3>
+            <pre data-lang="Shell"><code>dotnet ef dbcontext scaffold \
+  "Server=.\SQLEXPRESS;Database=SchoolDB;Trusted_Connection=True;" \
+  Microsoft.EntityFrameworkCore.SqlServer -o Models</code></pre>
+
+            <div class="callout callout-warn">
+                <strong>Scaffold Limitations</strong>
+                Only generates entity classes for tables — not for stored procedures or views.
+            </div>
+
+            <div class="callout callout-tip">
+                <strong>After Scaffolding</strong>
+                Use Migration commands to keep the model and database in sync after any future model changes.
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Scroll progress bar
+        const prog = document.getElementById('scrollProg');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const total = document.body.scrollHeight - window.innerHeight;
+            prog.style.transform = `scaleX(${scrolled / total})`;
+        });
+
+        // Active nav item on scroll
+        const sections = document.querySelectorAll('section[id], div[id]');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navItems.forEach(n => n.classList.remove('active'));
+                    const target = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+                    if (target) target.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+
+        sections.forEach(s => observer.observe(s));
+    </script>
+</body>
+
+</html>

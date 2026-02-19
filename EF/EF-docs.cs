@@ -1,3 +1,22 @@
+//╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗
+//║                                                                                                      ║
+//║   ENTITY FRAMEWORK CORE  —  Personal Study Notes                                                     ║
+//║                                                                                                      ║
+//║   Table of Contents:                                                                                 ║
+//║   ─────────────────────────────────────────────────────────────────────────────────────────────────  ║
+//║   FUNDAMENTALS          01. Entities  02. DbContext  03. Working w/ DbContext                        ║
+//║                         04. Change Tracking  05. Connection Strings                                  ║
+//║   MIGRATIONS            06. Migrations  07. SQL Scripts  08. PMC Commands  09. CLI Commands          ║
+//║   CRUD                  10. Saving (Connected)  11. Querying  12. Insert (Disconnected)              ║
+//║                         13. Update (Disconnected)  14. Delete (Disconnected)                         ║
+//║   CONVENTIONS & CONFIG  15. Conventions  16. One-to-Many  17. One-to-One  18. Configurations         ║
+//║                         19. Fluent 1:N  20. Fluent 1:1  21. Fluent N:N                               ║
+//║   ADVANCED              22. Shadow Props  23. Disconnected Graphs  24. TrackGraph                    ║
+//║                         25. Raw SQL  26. Stored Procedures  27. Database-First                       ║
+//║                                                                                                      ║
+//╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+
 //> Entity Framework Core
 
 /*
@@ -50,6 +69,15 @@ The following table lists database providers and NuGet packages for EF Core.
 ┗━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
 
+
+
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+//  ▌ FUNDAMENTALS
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [01]  Create Entities
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 1. Create Entities in Entity Framework Core
 
 //> Here we will create domain classes for our demo application and will see the difference between domain classes and entity classes of Entity Framework Core.
@@ -100,6 +128,10 @@ public class Grade
 # • To treat them as entities, we need to include them as DbSet<T> properties in the DbContext class of Entity Framework so that EF engine can track their status.
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [02]  DbContext
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 2. DbContext in Entity Framework Core
 /*
 > • The DbContext class is an integral part of the Entity Framework.
@@ -185,6 +217,10 @@ public class SchoolContext : DbContext
 //! EF API will create the specified database if it does not exist.
 
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [03]  Working with DbContext
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 3. Working with DbContext in EF Core
 
 /*
@@ -240,6 +276,10 @@ using (var context = new SchoolDbContext())
     It then prints the first name and last name of each student to the console.
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [04]  Change Tracking
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 4. Tracking Changes of Entities in EF Core
 /*
 • The DbContext in Entity Framework Core includes the ChangeTracker property of type ChangeTracker class which is responsible for tracking the state of each
@@ -335,6 +375,10 @@ using (var context = new SchoolContext())
 //> In the above example, disconnectedEntity is created out of the scope of DbContext instance (context). So, it is in the Detached state for the context.
 
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [05]  Connection Strings
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 5. Database Connection String in Entity Framework Core
 /*
 Database Connection String Formats
@@ -413,6 +457,15 @@ using (var context = new SchoolDbContext(configuration))
 
 
 
+
+
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+//  ▌ MIGRATIONS
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [06]  Migrations
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 6. Migrations in Entity Framework Core
 /*
 Migration is a way to keep the database schema in sync with the EF Core model by preserving data.
@@ -553,6 +606,10 @@ The above commands will remove the last migration and revert the model snapshot 
 */
 
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [07]  Generate SQL Scripts
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 7. Generate SQL Script in Entity Framework Core
 /*
 Here you will learn how to generate a SQL script from the EF Core model using a migration which you can use to execute manually or add to the source control.
@@ -578,6 +635,10 @@ The following table lists PMC/PowerShell commands and .NET Core CLI commands to 
 > use this command "dotnet ef migrations script" in .Net CLI
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [08]  PMC / PowerShell Commands
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 8. PMC/PowerShell Commands for Migrations
 /*
 Migration commands in Entity Framework Core can be executed using the Package Manager Console in Visual Studio. steps:
@@ -606,6 +667,10 @@ Migration commands in Entity Framework Core can be executed using the Package Ma
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [09]  CLI Commands (.NET)
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 9. Command Line Interface Commands for Migrations
 /*
 The .NET Core CLI (Command Line Interface) tools for Entity Framework Core perform design-time development tasks such as migrations, script generation, 
@@ -638,6 +703,15 @@ The following table lists all EF commands and sub-commands.
 > For example, you can use this command "dotnet ef migrations add --help" to get the usage of the "add" sub-command of the "migrations" command.
 */
 
+
+
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+//  ▌ CRUD
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [10]  Saving Data — Connected Scenario
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 10. Entity Framework Core: Saving Data in Connected Scenario
 /*
 > Entity Framework Core provides different ways to add, update, or delete data in the underlying database.
@@ -781,6 +855,10 @@ Therefore, EF Core will build and execute the following DELETE statement in the 
 
 
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [11]  Querying
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 11. Querying in Entity Framework Core
 /*
 > Querying in Entity Framework Core remains the same as in EF 6.x, with more optimized SQL queries and the ability to include C# functions into LINQ-to-Entities queries.
@@ -855,6 +933,10 @@ in a single SQL query. The above query executes the following SQL query in the d
 > projection Query Methods like Select() and SelectMany() can be used to load related entities by projecting the query results into a new form.
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [12]  Insert — Disconnected Scenario
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 12. Insert Data in a Disconnected Scenario in Entity Framework Core
 /*
 Saving data in the disconnected scenario is a little bit different than in the connected scenario.
@@ -986,6 +1068,10 @@ there is some additional topics related to inserting data in a disconnected scen
 i don't want study them now, but i will study them later when i need them. 
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [13]  Update — Disconnected Scenario
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 13. Update Data in Disconnected Scenario in Entity Framework Core
 
 /*
@@ -1095,6 +1181,10 @@ So, attaching an entity with the same key value will throw the following excepti
 ! Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [14]  Delete — Disconnected Scenario
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 15. Delete Data in Disconnected Scenario in Entity Framework Core
 /*
 EF Core API builds and executes a DELETE statement in the database for the entities whose EntityState is Deleted.
@@ -1145,6 +1235,15 @@ Note: The DbContext.Remove() and DbContext.RemoveRange() methods are newly intro
 # 2. Delete Data Using DbSet 
 */
 
+
+
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+//  ▌ CONVENTIONS & CONFIG
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [15]  EF Core Conventions
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 15. Conventions in Entity Framework Core
 /*
 Conventions are default rules using which Entity Framework builds a model based on your domain (entity) classes.
@@ -1256,6 +1355,10 @@ The following table lists foreign key column names for different reference prope
 EF Core creates a clustered index on the Primary Key columns and a non-clustered index on the Foreign Key columns, by default.
 */
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [16]  One-to-Many Conventions
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 16. One-to-Many Relationship Conventions in Entity Framework Core
 /*
 Entity Framework Core follows the same convention as Entity Framework 6.x conventions for one-to-many relationship.
@@ -1377,6 +1480,10 @@ This will create a one-to-many relationship with the non null foreign key column
 Therefore, these are the conventions which automatically create a one-to-many relationships in the corresponding database tables. 
 If entities do not follow the above conventions, then you can use Fluent API to configure the one-to-many relationships.
 */
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [17]  One-to-One Conventions
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 17. One-to-One Relationship Conventions in Entity Framework Core
 //> Entity Framework Core introduced default conventions which automatically configure a One-to-One relationship between two entities
 
@@ -1413,6 +1520,10 @@ This ensures that the value of the foreign key column StudentId must be unique i
 //! ┃ Use Fluent API to configure one-to-one relationships if entities do not follow the conventions. ┃
 //! ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [18]  Configurations (Data Annotations & Fluent API)
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 18. Configurations in Entity Framework Core
 /*
 You learned about default Conventions in EF Core in the previous chapter. Many times we want to customize the entity to table mapping and do not want to follow default conventions.
@@ -1602,6 +1713,10 @@ modelBuilder.Entity<Student>().Property(s => s.StudentId).IsRequired();
 
 //! Note: Fluent API configurations have higher precedence than data annotation attributes.
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [19]  Fluent API — One-to-Many
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 19. Configure One-to-Many Relationships using Fluent API in Entity Framework Core
 /*
 You learned about the Conventions for One-to-Many Relationship.
@@ -1727,6 +1842,10 @@ The OnDelete() method cascade delete behavior uses the DeleteBehavior parameter.
 */
 
 
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [20]  Fluent API — One-to-One
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 20. Configure One-to-One Relationships using Fluent API in Entity Framework Core
 /*
 Here you will learn how to configure one-to-one relationships between two entities using Fluent API, if they do not follow EF Core conventions.
@@ -1823,6 +1942,10 @@ modelBuilder.Entity<StudentAddress>()
     .HasForeignKey<StudentAddress>(ad => ad.AddressOfStudentId);
 //! Thus, you can configure a one-to-one relationship in Entity Framework Core.
 */
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [21]  Fluent API — Many-to-Many
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 21. Configure Many-to-Many Relationships in Entity Framework Core
 /*
 Here you will learn how to configure many-to-many relationships between two entities using Fluent API in Entity Framework Core.
@@ -1934,6 +2057,15 @@ modelBuilder.Entity<StudentCourse>()
     .HasForeignKey(sc => sc.CId);
 //> Note: EF team will include a feature where we don't need to create a joining entity for many-to-many relationships in the future.
 
+
+
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+//  ▌ ADVANCED
+//────────────────────────────────────────────────────────────────────────────────────────────────────
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [22]  Shadow Properties
+//════════════════════════════════════════════════════════════════════════════════════════════════════
 //> 22. Shadow Property in Entity Framework Core 
 /*
 Shadow properties are the properties that are not defined in your .NET entity class directly;
@@ -2057,3 +2189,718 @@ Shadow properties can be used in two scenarios:
     (In EF Core, if you don't define foreign key property in entity classes then it will automatically generate shadow property for that. You don't need to configure foreign key
         property manually.)
 */
+
+
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [23]  Disconnected Entity Graphs
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//> 23. Working with Disconnected Entity Graph in Entity Framework Core
+/*
+In the previous chapter, you learned how the ChangeTracker automatically changes the EntityState of each entity in the connected scenario.
+Here, you will learn about the behaviors of different methods on the root entity and child entities of the disconnected entity graph in Entity Framework Core.
+
+Entity Framework Core provides the following different methods, which not only attach an entity to a context, but also change the EntityState of each entity in a
+disconnected entity graph:
+1. Attach()
+2. Entry()
+3. Add()
+4. Update()
+5. Remove()
+
+Let's see how the above methods change the EntityState of each entity in an entity graph in Entity Framework Core 2.x.
+> 1. Attach()
+The DbContext.Attach() and DbSet.Attach() methods attach the specified disconnected entity graph and start tracking it.
+They return an instance of EntityEntry, which is used to assign the appropriate EntityState.
+*/
+//> The following example demonstrates the behavior of the DbContext.Attach() method on the EntityState of each entity in a graph.
+public static void Main()
+{
+    var stud = new Student() { //Root entity (empty key)
+        Name = "Bill",
+        Address = new StudentAddress()  //Child entity (with key value)
+        {
+            StudentAddressId = 1,
+            City = "Seattle",
+            Country = "USA"
+        },
+        StudentCourses = new List<StudentCourse>() {
+            new StudentCourse(){  Course = new Course(){ CourseName = "Machine Language" } },//Child entity (empty key)
+            new StudentCourse(){  Course = new Course(){  CourseId = 2 } } //Child entity (with key value)
+        }
+    };
+
+    var context = new SchoolContext();
+    context.Attach(stud).State = EntityState.Added;  
+
+    DisplayStates(context.ChangeTracker.Entries());
+}
+
+private static void DisplayStates(IEnumerable<EntityEntry> entries)
+{
+    foreach (var entry in entries)
+    {
+        Console.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State.ToString()} ");
+    }
+}
+
+//> Output:
+//> Entity: Student, State: Added   => Root entity with empty key value is marked as Added
+//> Entity: StudentAddress, State: Unchanged => Child entity with key value is marked as Unchanged
+//> Entity: StudentCourse, State: Added => Child entity with empty key value is marked as Added
+//> Entity: StudentCourse, State: Added => Child entity with empty key value is marked as Added
+//> Entity: Course, State: Added
+//> Entity: Course, State: Unchanged
+
+
+/*
+In the above example, stud is an instance of the Student entity graph which includes references of StudentAddress and StudentCourse entities.
+context.Attach(stud).State = EntityState.Added attaches the stud entity graph to a context and sets Added state to it.
+The Attach() method sets Added EntityState to the root entity (in this case Student) irrespective of whether it contains the Key value or not.
+If a child entity contains the key value, then it will be marked as Unchanged, otherwise it will be marked as Added.
+The output of the above example shows that the Student entity has Added EntityState, the child entities with non-empty key values have Unchanged EntityState and the
+ones with empty key values have Added state.
+
+
+The following table lists the behavior of the Attach() method when setting a different EntityState to a disconnected entity graph.
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Method / State Configuration         ┃ Root (with Key) ┃ Root (No Key)   ┃ Child (with Key)┃ Child (No Key)  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ context.Attach(graph)                ┃ Unchanged       ┃ Added           ┃ Unchanged       ┃ Added           ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ .State = EntityState.Added           ┃ Added           ┃ Added           ┃ Added           ┃ Added           ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ .State = EntityState.Modified        ┃ Modified        ┃ Exception       ┃ Unchanged       ┃ Added           ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ .State = EntityState.Deleted         ┃ Deleted         ┃ Exception       ┃ Unchanged       ┃ Added           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┛
+
+*/
+
+
+//> 2. Entry()
+//> The DbContext.Entry() method behaves differently in Entity Framework Core compared with the previous EF 6.x. Consider the following example:
+var student = new Student() { //Root entity (empty key)
+    Name = "Bill",
+    Address = new StudentAddress()  //Child entity (with key value)
+    {
+        StudentAddressId = 1,
+        City = "Seattle",
+        Country = "USA"
+    },
+    StudentCourses = new List<StudentCourse>() {
+            new StudentCourse(){  Course = new Course(){ CourseName="Machine Language" } },//Child entity (empty key)
+            new StudentCourse(){  Course = new Course(){  CourseId=2 } } //Child entity (with key value)
+        }
+};
+var context = new SchoolContext();
+context.Entry(student).State = EntityState.Modified;
+DisplayStates(context.ChangeTracker.Entries());
+//> Output:
+//> Entity: Student, State: Modified 
+
+/*
+In the above example, context.Entry(student).State = EntityState.Modified attaches an entity to a context and applies the specified EntityState (in this case, Modified) 
+to the root entity, irrespective of whether it contains a Key property value or not. It ignores all the child entities in a graph and does not attach or set their EntityState.
+The following table lists different behaviors of the DbContext.Entry() method.
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+┃ Method / State Configuration               ┃ Root (with Key) ┃ Root (No Key)   ┃ Child Entities ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━┫
+┃ .Entry(graph).State = EntityState.Added    ┃ Added           ┃ Added           ┃ Ignored        ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━┫
+┃ .Entry(graph).State = EntityState.Modified ┃ Modified        ┃ Modified        ┃ Ignored        ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━┫
+┃ .Entry(graph).State = EntityState.Deleted  ┃ Deleted         ┃ Deleted         ┃ Ignored        ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┛
+*/
+
+//> 3. Add()
+/*
+The DbContext.Add and DbSet.Add methods attach an entity graph to a context and set Added EntityState to a root and child entities, irrespective of whether they have key values or not.
+*/
+var student = new Student() { //Root entity (with key value)
+    StudentId = 1,
+    Name = "Bill",
+    Address = new StudentAddress()  //Child entity (with key value)
+    {
+        StudentAddressId = 1,
+        City = "Seattle",
+        Country = "USA"
+    },
+    StudentCourses = new List<StudentCourse>() {
+            new StudentCourse(){  Course = new Course(){ CourseName="Machine Language" } },//Child entity (empty key)
+            new StudentCourse(){  Course = new Course(){  CourseId=2 } } //Child entity (with key value)
+        }
+};
+
+var context = new SchoolContext();
+context.Students.Add(student);
+
+DisplayStates(context.ChangeTracker.Entries());
+//> Output:
+//> Entity: Student, State: Added
+//> Entity: StudentAddress, State: Added
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Added
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Added
+
+/*
+The following table lists possible EntityState of each entity in a graph using the DbContext.Add or DbSet.Add methods.
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Method                     ┃ Root (with/out Key)      ┃ Children (with/out Key)  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ DbContext.Add(entityGraph) ┃ Added                    ┃ Added                    ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ DbSet.Add(entityGraph)     ┃ Added                    ┃ Added                    ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+*/
+
+//> 4. Update()
+/*
+The DbContext.Update() and DbSet.Update() methods attach an entity graph to a context and set the EntityState of each entity in a graph depending on whether 
+it contains a key property value or not. 
+*/
+//> Consider the following example.
+var student = new Student() { //Root entity (with key value)
+    StudentId = 1,
+    Name = "Bill",
+    Address = new StudentAddress()  //Child entity (with key value)
+    {
+        StudentAddressId = 1,
+        City = "Seattle",
+        Country = "USA"
+    },
+    StudentCourses = new List<StudentCourse>() {
+            new StudentCourse(){  Course = new Course(){ CourseName="Machine Language" } },//Child entity (empty key)
+            new StudentCourse(){  Course = new Course(){  CourseId=2 } } //Child entity (with key value)
+        }
+};
+
+var context = new SchoolContext();
+context.Update(student);
+
+DisplayStates(context.ChangeTracker.Entries());
+//> Output:
+//> Entity: Student, State: Modified
+//> Entity: StudentAddress, State: Modified
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Added
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Modified
+
+/*
+In the above example, the Update() method applies the Modified state to the entities which contain non-empty key property values and the Added state to those which contain
+empty or default CLR key values, irrespective of whether they are a root entity or a child entity.
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Method                         ┃ Root (with Key) ┃ Root (No Key)   ┃ Child (with Key)┃ Child (No Key)  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ DbContext.Update(entityGraph)  ┃ Modified        ┃ Added           ┃ Modified        ┃ Added           ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ DbSet.Update(entityGraph)      ┃ Modified        ┃ Added           ┃ Modified        ┃ Added           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┛
+*/
+
+//> 5. Remove()
+//> The DbContext.Remove() and DbSet.Remove() methods set the Deleted EntityState to the root entity.
+var student = new Student() { //Root entity (with key value)
+    StudentId = 1,
+    Name = "Bill",
+    Address = new StudentAddress()  //Child entity (with key value)
+    {
+        StudentAddressId = 1,
+        City = "Seattle",
+        Country = "USA"
+    },
+    StudentCourses = new List<StudentCourse>() {
+            new StudentCourse(){  Course = new Course(){ CourseName="Machine Language" } },//Child entity (empty key)
+            new StudentCourse(){  Course = new Course(){  CourseId=2 } } //Child entity (with key value)
+        }
+};
+
+var context = new SchoolContext();
+context.Remove(student);
+
+DisplayStates(context.ChangeTracker.Entries());
+//> Output:
+//> Entity: Student, State: Deleted
+//> Entity: StudentAddress, State: Unchanged
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Added
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Unchanged
+
+/*
+The following table lists the behavior of the Remove() method on the EntityState of each entity.
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃ Method                         ┃ Root (with Key) ┃ Root (No Key)   ┃ Child (with Key)┃ Child (No Key)  ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ DbContext.Remove(entityGraph)  ┃ Deleted         ┃ Exception       ┃ Unchanged       ┃ Added           ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┫
+┃ DbSet.Remove(entityGraph)      ┃ Deleted         ┃ Exception       ┃ Unchanged       ┃ Added           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━┛
+*/
+//! Thus, be careful while using the above methods in EF Core.
+
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [24]  ChangeTracker.TrackGraph()
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//> 24. ChangeTracker.TrackGraph() in Entity Framework Core
+//> The ChangeTracker.TrackGraph() method was introduced in Entity Framework Core to track the entire entity graph and set custom entity states to each entity in a graph.
+
+/*
+# Signature: 
+# public virtual void TrackGraph(object rootEntity, Action<EntityEntry> callback);
+• The ChangeTracker.TrackGraph() method begins tracking an entity and any entities that are reachable by traversing its navigation properties. 
+• The specified callback is called for each discovered entity and an appropriate EntityState must be set for each entity. 
+• The callback function allows us to implement custom logic to set the appropriate state. If no state is set, the entity remains untracked.
+*/
+
+//> The following example demonstrates the TrackGraph method.
+var student = new Student() { //Root entity (with key value)
+    StudentId = 1,
+    Name = "Bill",
+    Address = new StudentAddress()  //Child entity (with key value)
+    {
+        StudentAddressId = 1,
+        City = "Seattle",
+        Country = "USA"
+    },
+    StudentCourses = new List<StudentCourse>() {
+            new StudentCourse(){  Course = new Course(){ CourseName="Machine Language" } },//Child entity (empty key)
+            new StudentCourse(){  Course = new Course(){  CourseId=2 } } //Child entity (with key value)
+        }
+};
+var context = new SchoolContext();
+            
+context.ChangeTracker.TrackGraph(student, e => {
+                                                if (e.Entry.IsKeySet)
+                                                {
+                                                    e.Entry.State = EntityState.Unchanged;
+                                                }
+                                                else
+                                                {
+                                                    e.Entry.State = EntityState.Added;
+                                                }
+                                            });
+
+foreach (var entry in context.ChangeTracker.Entries())
+{
+    Console.WriteLine($"Entity: {entry.Entity.GetType().Name}, 
+                        State: {entry.State.ToString()} ");
+}
+
+//> Output:
+//> Entity: Student, State: Added
+//> Entity: StudentAddress, State: Unchanged
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Added
+//> Entity: StudentCourse, State: Added
+//> Entity: Course, State: Unchanged
+//! it is just manually way to do things which we can do by using the DbContext.Add() or DbContext.Update() methods.
+//! even though but it gives us more control to set the state of each entity in a graph.
+
+/*
+In the above example, the ChangeTracker.TrackGraph() method is used to set the state for each entity in a Student entity graph.
+The first parameter is an entity graph and the second parameter is a function which sets the state of each entity.
+We used a lambda expression to set the Unchanged state for entities that have valid key values and the Added state for entities that have empty key values.
+The IsKeySet becomes true when an entity has a valid key property value.
+Thus, we can use the ChangeTracker.TrackGraph() method to set different EntityState for each entity in a graph.
+*/
+
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [25]  Raw SQL Queries (FromSql)
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//> 25. Execute Raw SQL Queries in Entity Framework Core
+//> Entity Framework Core provides the DbSet.FromSql() method to execute raw SQL queries for the underlying database and get the results as entity objects.
+//> The following example demonstrates executing a raw SQL query to MS SQL Server database.
+var context = new SchoolContext();
+
+var students = context.Students
+                    .FromSql("SELECT * FROM Students WHERE Name = 'Bill'")
+                    .ToList();
+
+//> Parameterized Query
+//> The FromSql method allows parameterized queries using string interpolation syntax in C#, as shown below.
+string name = "Bill";
+var context = new SchoolContext();
+var students = context.Students
+                    .FromSql($"SELECT * FROM Students WHERE Name = '{name}'")
+                    .ToList();
+
+//> The following is also valid.
+string name = "Bill";
+var context = new SchoolContext();
+var students = context.Students
+                    .FromSql("SELECT * FROM Students WHERE Name = '{0}'", name)
+                    .ToList();
+
+/*
+> The examples above will execute the following SQL query to the SQL Server database:
+> '''
+> exec sp_executesql N'SELECT * FROM Students WHERE Name = ''@p0''
+> ',N'@p0 nvarchar(4000)',@p0=N'Bill'
+> go
+> '''
+*/
+
+//> LINQ Operators
+//> You can also use LINQ Operators after a raw query using FromSql method.
+string name = "Bill";
+var context = new SchoolContext();
+var students = context.Students
+                    .FromSql("SELECT * FROM Students WHERE Name = '{0}'", name)
+                    .OrderBy(s => s.StudentId)
+                    .ToList();
+
+//> In the above example, EF Core executes the following query by combining FromSql method and OrderBy operator.
+/*
+> '''
+> exec sp_executesql N'SELECT [s].[StudentId], [s].[Name]
+> FROM (
+>     SELECT * FROM Students WHERE Name = ''@p0''
+> ) AS [s]
+> ORDER BY [s].[StudentId]',N'@p0 nvarchar(4000)',@p0=N'Bill'
+> go
+> '''
+*/
+
+//> FromSql Limitations
+/*
+> 1. SQL queries must return entities of the same type as DbSet<T> type. e.g. the specified query cannot return the Course entities if FromSql is used after Students.
+>     Returning ad-hoc types from FromSql() method is in the backlog.
+> 2. The SQL query must return all the columns of the table. e.g. context.Students.FromSql("SELECT StudentId, LastName FROM Students").ToList() will throw an exception.
+> 3. The SQL query cannot include JOIN queries to get related data. Use Include method to load related entities after FromSql() method.
+*/
+
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [26]  Stored Procedures
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//> 26. Working with Stored Procedures in Entity Framework Core
+/*
+EF Core provides the following methods to execute a stored procedure:
+> 1. DbSet<TEntity>.FromSql()
+> 2. DbContext.Database.ExecuteSqlCommand()
+There are some limitations on the execution of database stored procedures using FromSql or ExecuteSqlCommand methods in EF Core 2:
+> 1. Result must be an entity type. This means that a stored procedure must return all the columns of the corresponding table of an entity.
+> 2. Result cannot contain related data. This means that a stored procedure cannot perform JOINs to formulate the result.
+> 3. Insert, Update and Delete procedures cannot be mapped with the entity, so the SaveChanges method cannot call stored procedures for CUD operations.
+*/
+
+//> Let's create our stored procedure in MS SQL Server before we execute it in EF Core.
+//# If you follow the database-first approach, then execute the following script in your local SQL Server database:
+/*
+USE [SchoolDB] => database name
+GO
+
+SET ANSI_NULLS ON => it is required to set ANSI_NULLS ON to create a stored procedure in SQL Server
+GO
+
+SET QUOTED_IDENTIFIER ON => it is required to set QUOTED_IDENTIFIER ON to create a stored procedure in SQL Server
+GO
+
+CREATE PROCEDURE [dbo].[GetStudents]
+            @FirstName varchar(50)
+        AS
+        BEGIN
+            SET NOCOUNT ON;
+            select * from Students where FirstName like @FirstName +'%'
+        END
+GO
+*/
+
+//# If you are following the code-first approach, then follow the steps below:
+//> 1. Add an empty migration by executing the following command in NPM (NuGet Package Manager):
+//>     PM> Add-migration sp-GetStudents
+//> 2. Write the following code in the Up method of the empty migration class in <DateTime>_sp-GetStudents.cs:
+public partial class spGetStudents : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        var sp = @"CREATE PROCEDURE [dbo].[GetStudents]
+                    @FirstName varchar(50)
+                AS
+                BEGIN
+                    SET NOCOUNT ON;
+                    select * from Students where FirstName like @FirstName +'%'
+                END";
+        migrationBuilder.Sql(sp);
+    }
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+    }
+}
+//> 3. Now, create the above stored procedure in the database by executing the following command in NPM:
+//>     PM> Update-database
+//> This will create the GetStudents stored procedure in the SQL Server database.
+
+//> Execute Stored Procedures using FromSql
+//> As mentioned in the previous chapter, the FromSql method of DbSet can be used to execute the raw SQL queries to the underlying database. 
+//> In the same way, it can be used to execute the stored procedure which returns entity data, but with some limitations.
+
+//# In the database, we can execute the GetStudents stored procedure with an INPUT parameter value as shown below:
+//> GetStudents "Bill"
+//> -- or
+//> exec GetStudents "Bill"
+
+//# You can execute a stored procedure using the FromSql method in EF Core in the same way as above, as shown below.
+var context = new SchoolContext(); 
+var students = context.Students.FromSql("GetStudents 'Bill'").ToList();
+
+//> You can also pass a parameter value using C# string interpolation syntax, as shown below.
+var name = "Bill";
+var context = new SchoolContext(); 
+var students = context.Students
+                        .FromSql($"GetStudents {name}")
+                        .ToList();
+//or
+//var students = context.Students.FromSql($"exec GetStudents {name}").ToList();
+
+//> Use a SqlParameter instance to specify the value of IN or OUT parameters as shown below:
+var context = new SchoolContext(); 
+var param = new SqlParameter("@FirstName", "Bill");
+//or
+/*var param = new SqlParameter() {
+                    ParameterName = "@FirstName",
+                    SqlDbType =  System.Data.SqlDbType.VarChar,
+                    Direction = System.Data.ParameterDirection.Input,
+                    Size = 50,
+                    Value = "Bill"
+};*/
+var students = context.Students.FromSql("GetStudents @FirstName", param).ToList();
+
+//> You can also specify @p0 for the first parameter, @p1 for the second, and so on.
+var context = new SchoolContext(); 
+var students = context.Students.FromSql("GetStudents @p0","Bill").ToList();
+//> In the above example, @p0 is used for the first parameter because named parameters are not supported yet in EF Core.
+/*
+! Note: All entities in the result will be tracked by the DbContext by default. If you execute the same stored procedure with the same parameters multiple times,
+! then it will execute the same SQL statement each time, but it will only track one result set. 
+For example, the following example will execute the GetStudents stored procedure three times, but it will cache and track only one copy of the result.
+*/
+
+var context = new SchoolContext(); 
+
+var list1 = context.Students.FromSql("GetStudents 'Bill'").ToList();
+var list2 = context.Students.FromSql("GetStudents 'Bill'").ToList();
+var list3 = context.Students.FromSql("GetStudents 'Bill'").ToList();
+
+//> Execute Stored Procedure using ExecuteSqlCommand()
+//> The ExecuteSqlCommand() method is used to execute database commands as a string. It returns an integer for the number of rows that were affected through the specified command.
+
+var context = new SchoolContext(); 
+var rowsAffected = context.Database.ExecuteSqlCommand("Update Students set FirstName = 'Bill' where StudentId = 1;");
+/*
+In the above example, the update command is passed in the ExecuteSqlCommand method.
+The value of rowsAffected will be 1 because only 1 row was affected with the specified update command.
+In the same way, we can execute stored procedures for Create, Update and Delete commands.
+Consider the following stored procedure which inserts a record in the Students table in the database:
+> '''
+> CREATE PROCEDURE CreateStudent
+>     @FirstName Varchar(50),
+>     @LastName Varchar(50)
+> AS
+> BEGIN
+>     SET NOCOUNT ON;
+>     Insert into Students(
+>            [FirstName]
+>            ,[LastName]
+>            )
+>  Values (@FirstName, @LastName)
+> END
+> GO
+> '''
+*/
+//> Now, you can execute the above stored procedure as shown below.
+var context = new SchoolContext(); 
+context.Database.ExecuteSqlCommand("CreateStudent @p0, @p1", parameters: new[] { "Bill", "Gates" });
+//> In the same way, you can execute stored procedures for Update and Delete commands.
+
+
+
+
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//  [27]  Database-First (Scaffold)
+//════════════════════════════════════════════════════════════════════════════════════════════════════
+//> 27. Creating a Model for an Existing Database in Entity Framework Core
+/*
+Here you will learn how to create the context and entity classes for an existing database in Entity Framework Core.
+Creating entity and context classes for an existing database is called the Database-First approach.
+
+EF Core does not support a visual designer for the DB model or a wizard to create the entity and context classes similar to EF 6. So, 
+we need to do reverse engineering using the Scaffold-DbContext command. This reverse engineering command creates entity and context classes (by deriving DbContext) 
+based on the schema of the existing database.
+> Scaffold-DbContext Command
+Use Scaffold-DbContext to create a model based on your existing database. The following parameters can be specified with Scaffold-DbContext in Package Manager Console:
+Scaffold-DbContext [-Connection] [-Provider] [-OutputDir] [-Context] [-Schemas] [-Tables] 
+                    [-DataAnnotations] [-Force] [-Project] [-StartupProject] [<CommonParameters>]
+
+> In Visual Studio, select menu Tools -> NuGet Package Manager -> Package Manager Console and run the following command:
+PM> Scaffold-DbContext "Server=.\SQLExpress;Database=SchoolDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+In the above command, the first parameter is a connection string which includes three parts:
+1. DB Server. => Server=.\SQLExpress; refers to the local SQLEXPRESS database server.
+2. database name. => Database=SchoolDB; specifies the name of the database for which we want to create the model classes. In this case, it is SchoolDB.
+3. security info. => Trusted_Connection=True; specifies the Windows authentication. It will use Windows credentials to connect to the SQL Server. 
+The second parameter is the provider name. We use the provider for the SQL Server, so it is Microsoft.EntityFrameworkCore.SqlServer. 
+The -OutputDir parameter specifies the directory where we want to generate all the classes which is the Models folder in this case.
+
+> Use the following command to get detailed help on the Scaffold-DbContext command:
+PM> get-help scaffold-dbcontext -detailed
+The above Scaffold-DbContext command creates entity classes for each table in the SchoolDB database and context class (by deriving DbContext) with Fluent API
+configurations for all the entities in the Models folder.
+*/
+
+//> The following is the generated Student entity class for the Student table.
+using System;
+using System.Collections.Generic;
+
+namespace EFCoreTutorials.Models
+{
+    public partial class Student
+    {
+        public Student()
+        {
+            StudentCourse = new HashSet<StudentCourse>();
+        }
+        public int StudentId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int? StandardId { get; set; }
+        public Standard Standard { get; set; }
+        public StudentAddress StudentAddress { get; set; }
+        public ICollection<StudentCourse> StudentCourse { get; set; }
+    }
+}
+
+//> The following is the SchoolDBContext class which you can use to save or retrieve data.
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+
+namespace EFCoreTutorials.Models
+{
+    public partial class SchoolDBContext : DbContext
+    {
+        public virtual DbSet<Course> Course { get; set; }
+        public virtual DbSet<Standard> Standard { get; set; }
+        public virtual DbSet<Student> Student { get; set; }
+        public virtual DbSet<StudentAddress> StudentAddress { get; set; }
+        public virtual DbSet<StudentCourse> StudentCourse { get; set; }
+        public virtual DbSet<Teacher> Teacher { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer(@"Server=.\SQLExpress;Database=SchoolDB;Trusted_Connection=True;");
+            }
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Course>(entity =>
+            {
+                entity.Property(e => e.CourseName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.HasOne(d => d.Teacher)
+                    .WithMany(p => p.Course)
+                    .HasForeignKey(d => d.TeacherId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Course_Teacher");
+            });
+
+            modelBuilder.Entity<Standard>(entity =>
+            {
+                entity.Property(e => e.Description)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.StandardName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Student>(entity =>
+            {
+                entity.Property(e => e.StudentId).HasColumnName("StudentID");
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.LastName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.HasOne(d => d.Standard)
+                    .WithMany(p => p.Student)
+                    .HasForeignKey(d => d.StandardId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Student_Standard");
+            });
+
+            modelBuilder.Entity<StudentAddress>(entity =>
+            {
+                entity.HasKey(e => e.StudentId);
+                entity.Property(e => e.StudentId)
+                    .HasColumnName("StudentID")
+                    .ValueGeneratedNever();
+                entity.Property(e => e.Address1)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.Address2)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.State)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.HasOne(d => d.Student)
+                    .WithOne(p => p.StudentAddress)
+                    .HasForeignKey<StudentAddress>(d => d.StudentId)
+                    .HasConstraintName("FK_StudentAddress_Student");
+            });
+
+            modelBuilder.Entity<StudentCourse>(entity =>
+            {
+                entity.HasKey(e => new { e.StudentId, e.CourseId });
+                entity.HasOne(d => d.Course)
+                    .WithMany(p => p.StudentCourse)
+                    .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_StudentCourse_Course");
+                entity.HasOne(d => d.Student)
+                    .WithMany(p => p.StudentCourse)
+                    .HasForeignKey(d => d.StudentId)
+                    .HasConstraintName("FK_StudentCourse_Student");
+            });
+            modelBuilder.Entity<Teacher>(entity =>
+            {
+                entity.Property(e => e.StandardId).HasDefaultValueSql("((0))");
+                entity.Property(e => e.TeacherName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.HasOne(d => d.Standard)
+                    .WithMany(p => p.Teacher)
+                    .HasForeignKey(d => d.StandardId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_Teacher_Standard");
+            });
+        }
+    }
+}
+
+//! Note: EF Core creates entity classes only for tables and not for stored procedures or views.
+
+//> DotNet CLI
+//> If you use the .NET command-line interface, then open the command prompt and navigate to the root folder and execute the following dotnet ef dbcontext scaffold command:
+
+//> dotnet ef dbcontext scaffold "Server=.\SQLEXPRESS;Database=SchoolDB;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models 
+// Thus, you can create an EF Core model for an existing database.
+// Note: Once you have created the model, you must use the Migration commands whenever you change the model to keep the database up to date with the model.
